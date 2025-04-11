@@ -2,22 +2,16 @@ backend:
   name: github
   repo: hikesilent/rybkiparty
   branch: main
-  auth_scope: public_repo  # "repo" dla prywatnych repozytoriów
-  site_domain: rybki.party  # lub twoja-domena.github.io
-  base_url: https://api.netlify.com  # wymagane dla GitHub OAuth
+  site_domain: rybki.party
+  base_url: https://api.netlify.com
   auth_endpoint: https://api.netlify.com/auth
+  auth_scope: public_repo
 
-# Dodaj te linie na końcu pliku (poza sekcją backend):
-local_backend: true  # opcjonalnie - pozwala testować lokalnie
-publish_mode: editorial_workflow  # opcjonalnie - dodaje drafty postów
-
-# Client ID i Secret (KLUCZOWE!)
-oauth:
-  client_id: "Ov23liMIWdHfnGZZiH8f"
-  client_secret: "69c649c6f5a029eaf91b95443039c2c305b956a4"
-
-media_folder: "assets/uploads"  # folder na zdjęcia
+media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
+
+local_backend: true  # Opcjonalne - tylko do testów lokalnych
+publish_mode: editorial_workflow  # Opcjonalne - wersje robocze
 
 collections:
   - name: "posts"
@@ -27,7 +21,7 @@ collections:
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { name: "title", label: "Tytuł", widget: "string" }
-      - { name: "image", label: "Zdjęcie", widget: "image" }
-      - { name: "tags", label: "Tagi", widget: "list" }
+      - { name: "image", label: "Zdjęcie", widget: "image", required: false }
+      - { name: "tags", label: "Tagi", widget: "list", required: false }
       - { name: "date", label: "Data", widget: "datetime" }
       - { name: "body", label: "Treść", widget: "markdown" }
