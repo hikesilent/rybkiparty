@@ -1,31 +1,41 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Decap CMS</title>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>  <script>
-    CMS.init({
-      config: {
-        backend: {
-          name: "github",
-          repo: "hikesilent/rybkiparty",
-          branch: "main",
-          auth_scope: "public_repo",
-          oauth_client_id: "Ov23liMIWdHfnGZZiH8f",
-          site_domain: "rybki.party",
-          oauth_client_secret: "69c649c6f5a029eaf91b95443039c2c305b956a4"
-        },
-        media_folder: "assets/uploads",
-        public_folder: "/assets/uploads"
-      }
-    });
-  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Content Manager | Twoja Strona</title>
+  
+  <!-- Widget Netlify Identity -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  
+  <!-- Decap CMS -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  
+  <!-- Opcjonalnie: style -->
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    .nc-root {
+      --primary: #3a7bd5;
+    }
+  </style>
 </head>
 <body>
-  <!-- Dodaj element dla CMS -->
-  <div id="nc-root"></div>
-  
-
+  <script>
+    // Inicjalizacja Identity
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", user => {
+        if (!user) {
+          window.netlifyIdentity.on("login", () => {
+            document.location.href = "/admin/";
+          });
+        }
+      });
+    }
+  </script>
 </body>
 </html>

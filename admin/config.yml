@@ -1,8 +1,6 @@
 backend:
-  name: github
-  repo: hikesilent/rybkiparty
+  name: git-gateway
   branch: main
-  auth_scope: public_repo
 
   commit_messages:
     create: "Create {{collection}} “{{slug}}”"

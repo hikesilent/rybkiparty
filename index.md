@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Strona główna
+title: Rybki Party - Kanał dla prawdziwych wędkarzy
 ---
 
 <div class="content-box">
