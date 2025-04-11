@@ -16,17 +16,17 @@
       padding: 0;
       background: #f6f8fa;
     }
-    #app {
+    #app-container {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
     }
     .panel {
       display: none;
       flex: 1;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
+      padding: 20px;
     }
     #login-panel {
       justify-content: center;
@@ -42,26 +42,26 @@
       padding: 10px 20px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 1rem;
-      margin: 1rem 0;
+      font-size: 16px;
+      margin: 10px 0;
     }
     .loading {
-      margin: 2rem;
+      margin: 20px;
       color: #586069;
     }
     .error {
       color: #cb2431;
-      margin: 1rem 0;
+      margin: 10px 0;
     }
-    #cms-root {
+    #cms-iframe {
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
+      height: calc(100vh - 60px);
+      border: none;
     }
   </style>
 </head>
 <body>
-  <div id="app">
+  <div id="app-container">
     <!-- Panel logowania -->
     <div id="login-panel" class="panel">
       <h1>Admin Dashboard</h1>
@@ -73,8 +73,7 @@
     <!-- Panel CMS -->
     <div id="cms-panel" class="panel">
       <button id="logout-btn" class="btn">Logout</button>
-      <div id="cms-loading" class="loading">Loading CMS...</div>
-      <div id="cms-root"></div>
+      <iframe id="cms-iframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
     </div>
   </div>
 
@@ -88,12 +87,6 @@
       messagingSenderId: "985551857623",
       appId: "1:985551857623:web:5b66f04f0708c3feca0d92",
       measurementId: "G-G8KF8YWEP0"
-    };
-
-    // Globalny stan
-    const state = {
-      cmsInitialized: false,
-      cmsInstance: null
     };
 
     // Inicjalizacja Firebase
@@ -110,19 +103,15 @@
 
     // Obsługa autentykacji
     function setupAuth() {
-      const loginBtn = document.getElementById('login-btn');
-      const logoutBtn = document.getElementById('logout-btn');
-      
-      loginBtn.addEventListener('click', handleLogin);
-      logoutBtn.addEventListener('click', handleLogout);
+      document.getElementById('login-btn').addEventListener('click', handleLogin);
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
       
       firebase.auth().onAuthStateChanged(user => {
         if (user) {
           showCmsPanel();
-          initCMS();
+          loadCMS();
         } else {
           showLoginPanel();
-          destroyCMS();
         }
       });
     }
@@ -147,68 +136,43 @@
       firebase.auth().signOut();
     }
 
-function initCMS() {
-  if (state.cmsInitialized) return;
-
-  showLoading('cms-loading');
-
-  const script = document.createElement('script');
-  script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-  script.onload = () => {
-    try {
-      // Sprawdź, czy CMS jest dostępny globalnie
-      if (typeof window.CMS === 'undefined') {
-        throw new Error('CMS is not available in window');
-      }
-
-      // Inicjalizacja CMS z konfiguracją
-      window.CMS.init({
-        config: {
-          backend: {
-            name: "git-gateway", // lub "github" w zależności od używanego backendu
-            branch: "main"       // dostosuj, jeśli masz inną nazwę głównej gałęzi
-          },
-          media_folder: "public/uploads",
-          public_folder: "/uploads",
-          collections: [
-            {
-              name: "posts",
-              label: "Posty",
-              folder: "content/posts",
-              create: true,
-              slug: "{{slug}}",
-              fields: [
-                { label: "Tytuł", name: "title", widget: "string" },
-                { label: "Treść", name: "body", widget: "markdown" }
-              ]
-            }
-          ]
+    // Ładowanie CMS
+    function loadCMS() {
+      const iframe = document.getElementById('cms-iframe');
+      iframe.srcdoc = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>CMS</title>
+          <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              try {
+                CMS.init();
+                console.log('CMS initialized successfully');
+                window.parent.postMessage('cms-ready', '*');
+              } catch (error) {
+                console.error('CMS error:', error);
+                window.parent.postMessage('cms-error', '*');
+              }
+            });
+          </script>
+        </head>
+        <body>
+          <div id="nc-root"></div>
+        </body>
+        </html>
+      `;
+      
+      // Nasłuchiwanie komunikatów z iframe
+      window.addEventListener('message', (event) => {
+        if (event.data === 'cms-ready') {
+          console.log('CMS loaded successfully');
+        } else if (event.data === 'cms-error') {
+          showError('cms-panel', 'Failed to initialize CMS');
         }
       });
-
-      state.cmsInitialized = true;
-      hideLoading('cms-loading');
-    } catch (error) {
-      showError('cms-root', `CMS error: ${error.message}`);
-    }
-  };
-
-  script.onerror = () => {
-    showError('cms-root', 'Failed to load CMS');
-  };
-
-  document.head.appendChild(script);
-}
-
-
-    // Niszczenie CMS
-    function destroyCMS() {
-      if (state.cmsInstance) {
-        document.body.removeChild(state.cmsInstance);
-        state.cmsInstance = null;
-      }
-      state.cmsInitialized = false;
-      document.getElementById('cms-root').innerHTML = '';
     }
 
     // Pokazanie panelu logowania
