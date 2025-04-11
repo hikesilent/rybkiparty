@@ -10,74 +10,12 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   
   <style>
-    :root {
-      --primary: #24292e;
-      --error: #cb2431;
-      --text: #24292e;
-      --background: #f6f8fa;
-    }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--background);
-      color: var(--text);
-    }
-    #app-container {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .panel {
-      display: none;
-      flex: 1;
-      flex-direction: column;
-      padding: 2rem;
-    }
-    #auth-panel {
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    #cms-panel {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .btn {
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-      margin: 1rem 0;
-      transition: opacity 0.2s;
-    }
-    .btn:hover {
-      opacity: 0.9;
-    }
-    .loading {
-      margin: 2rem 0;
-      color: var(--text);
-    }
-    .error {
-      color: var(--error);
-      margin: 1rem 0;
-      max-width: 400px;
-    }
-    #cms-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      min-height: 600px;
-    }
+    /* Your existing styles */
   </style>
 </head>
 <body>
   <div id="app-container">
-    <!-- Panel logowania -->
+    <!-- Login Panel -->
     <div id="auth-panel" class="panel">
       <h1>Admin Dashboard</h1>
       <button id="login-btn" class="btn">Login with GitHub</button>
@@ -85,7 +23,7 @@
       <div id="auth-loading" class="loading" style="display: none;">Loading...</div>
     </div>
 
-    <!-- Panel CMS -->
+    <!-- CMS Panel -->
     <div id="cms-panel" class="panel">
       <button id="logout-btn" class="btn">Logout</button>
       <iframe id="cms-iframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
@@ -93,7 +31,7 @@
   </div>
 
   <script>
-    // Konfiguracja Firebase
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDv8zijZhIP3ceuGEyGI2RA4OSnh9iXqHc",
       authDomain: "rybki-party.firebaseapp.com",
@@ -104,7 +42,7 @@
       measurementId: "G-G8KF8YWEP0"
     };
 
-    // Inicjalizacja Firebase
+    // Initialize Firebase
     try {
       if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
@@ -114,7 +52,7 @@
       console.error("Firebase init error:", error);
     }
 
-    // Referencje do elementów DOM
+    // DOM Elements
     const authPanel = document.getElementById('auth-panel');
     const cmsPanel = document.getElementById('cms-panel');
     const loginBtn = document.getElementById('login-btn');
@@ -123,11 +61,26 @@
     const authLoading = document.getElementById('auth-loading');
     const cmsIframe = document.getElementById('cms-iframe');
 
-    // Flaga stanu CMS
+    // State
     let cmsLoaded = false;
 
-    // Obsługa logowania
-    loginBtn.addEventListener('click', async () => {
+    // Event Listeners
+    loginBtn.addEventListener('click', handleLogin);
+    logoutBtn.addEventListener('click', handleLogout);
+
+    // Auth State Observer
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        showCMS();
+        loadCMS();
+      } else {
+        showAuth();
+        unloadCMS();
+      }
+    });
+
+    // Functions
+    async function handleLogin() {
       authLoading.style.display = 'block';
       authError.textContent = '';
       
@@ -140,41 +93,26 @@
       } finally {
         authLoading.style.display = 'none';
       }
-    });
+    }
 
-    // Obsługa wylogowania
-    logoutBtn.addEventListener('click', () => {
+    function handleLogout() {
       firebase.auth().signOut();
-    });
+    }
 
-    // Monitorowanie stanu uwierzytelnienia
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        showCMS();
-        loadCMS();
-      } else {
-        showAuth();
-        unloadCMS();
-      }
-    });
-
-    // Pokazanie panelu CMS
     function showCMS() {
       authPanel.style.display = 'none';
       cmsPanel.style.display = 'flex';
     }
 
-    // Pokazanie panelu logowania
     function showAuth() {
       authPanel.style.display = 'flex';
       cmsPanel.style.display = 'none';
     }
 
-    // Ładowanie CMS w iframe
     function loadCMS() {
       if (cmsLoaded) return;
       
-      // Utwórz nowy dokument w iframe
+      // Create CMS iframe content
       cmsIframe.srcdoc = `
         <!DOCTYPE html>
         <html>
@@ -182,24 +120,31 @@
           <meta charset="utf-8">
           <title>CMS Panel</title>
           <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+          <link href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" rel="stylesheet">
           <style>
-            body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+            body { margin: 0; padding: 0; }
             #nc-root { padding: 20px; }
           </style>
         </head>
         <body>
           <div id="nc-root"></div>
           <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              try {
-                CMS.init();
-                console.log("CMS initialized successfully");
-              } catch (error) {
-                console.error("CMS init error:", error);
-                document.getElementById('nc-root').innerHTML = 
-                  '<p style="color:red;padding:20px;">CMS initialization failed. Please refresh.</p>';
+            // Wait for CMS script to load
+            function checkCMS() {
+              if (typeof CMS !== 'undefined') {
+                try {
+                  CMS.init();
+                  console.log("CMS initialized successfully");
+                } catch (error) {
+                  console.error("CMS init error:", error);
+                  document.getElementById('nc-root').innerHTML = 
+                    '<p style="color:red;padding:20px;">CMS initialization failed. Please refresh.</p>';
+                }
+              } else {
+                setTimeout(checkCMS, 100);
               }
-            });
+            }
+            checkCMS();
           </script>
         </body>
         </html>
@@ -208,7 +153,6 @@
       cmsLoaded = true;
     }
 
-    // Wyłączanie CMS
     function unloadCMS() {
       if (cmsLoaded) {
         cmsIframe.srcdoc = '';
@@ -216,7 +160,7 @@
       }
     }
 
-    // Początkowy stan
+    // Initial state
     showAuth();
   </script>
 </body>
