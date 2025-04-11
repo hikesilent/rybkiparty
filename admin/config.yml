@@ -26,7 +26,6 @@ collections:
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
-fields:
       - { name: "title", label: "Tytuł", widget: "string" }
       - { name: "image", label: "Zdjęcie", widget: "image" }
       - { name: "tags", label: "Tagi", widget: "list" }
