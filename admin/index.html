@@ -1,10 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kokpit | Rybki.party</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Decap CMS | Rybki.party</title>
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <script>
+    CMS.init({
+      config: {
+        backend: {
+          oauth_client_id: "Ov23liMIWdHfnGZZiH8f",
+          oauth_client_secret: "69c649c6f5a029eaf91b95443039c2c305b956a4"
+        }
+      }
+    });
+  </script>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,15 +28,5 @@
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <script>
-  CMS.init({
-    config: {
-      backend: {
-        oauth_client_id: "Ov23liMIWdHfnGZZiH8f",
-        oauth_client_secret: "69c649c6f5a029eaf91b95443039c2c305b956a4"
-      }
-    }
-  });
-</script>
 </body>
 </html>
