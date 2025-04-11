@@ -1,76 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
   
-  <!-- Firebase SDK -->
+  <!-- Firebase -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  
+
   <style>
+    :root {
+      --primary: #24292e;
+      --error: #cb2431;
+      --text: #24292e;
+      --background: #f6f8fa;
+    }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       margin: 0;
       padding: 0;
-      background: #f6f8fa;
+      background: var(--background);
+      color: var(--text);
     }
     #app {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
     }
     .panel {
       display: none;
       flex: 1;
       flex-direction: column;
-      align-items: center;
       padding: 2rem;
     }
     #login-panel {
+      align-items: center;
       justify-content: center;
       text-align: center;
     }
     #cms-panel {
+      max-width: 1200px;
       width: 100%;
+      margin: 0 auto;
     }
     .btn {
-      background: #24292e;
+      background: var(--primary);
       color: white;
       border: none;
-      padding: 10px 20px;
+      padding: 12px 24px;
       border-radius: 6px;
       cursor: pointer;
       font-size: 1rem;
       margin: 1rem 0;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.9;
     }
     .loading {
-      margin: 2rem;
-      color: #586069;
+      margin: 2rem 0;
+      color: var(--text);
     }
     .error {
-      color: #cb2431;
+      color: var(--error);
       margin: 1rem 0;
+      max-width: 400px;
     }
     #cms-root {
       width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
     }
   </style>
 </head>
 <body>
   <div id="app">
-    <!-- Panel logowania -->
+    <!-- Login Panel -->
     <div id="login-panel" class="panel">
       <h1>Admin Dashboard</h1>
       <button id="login-btn" class="btn">Login with GitHub</button>
       <div id="login-error" class="error"></div>
-      <div id="login-loading" class="loading" style="display: none;">Loading...</div>
+      <div id="login-loading" class="loading" style="display: none;">Authenticating...</div>
     </div>
 
-    <!-- Panel CMS -->
+    <!-- CMS Panel -->
     <div id="cms-panel" class="panel">
       <button id="logout-btn" class="btn">Logout</button>
       <div id="cms-loading" class="loading">Loading CMS...</div>
@@ -79,7 +91,7 @@
   </div>
 
   <script>
-    // Konfiguracja Firebase
+    // Konfiguracja Firebase - ZASTĄP SWOIMI DANYMI
     const firebaseConfig = {
       apiKey: "AIzaSyDv8zijZhIP3ceuGEyGI2RA4OSnh9iXqHc",
       authDomain: "rybki-party.firebaseapp.com",
@@ -90,138 +102,124 @@
       measurementId: "G-G8KF8YWEP0"
     };
 
-    // Globalny stan
-    const state = {
-      cmsInitialized: false,
-      cmsInstance: null
-    };
-
     // Inicjalizacja Firebase
-    function initFirebase() {
-      try {
-        if (!firebase.apps.length) {
-          firebase.initializeApp(firebaseConfig);
-        }
-        setupAuth();
-      } catch (error) {
-        showError('login-error', `Firebase error: ${error.message}`);
+    try {
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
       }
+    } catch (error) {
+      console.error("Firebase initialization error:", error);
+      document.getElementById('login-error').textContent = "Initialization error. Please refresh.";
     }
 
-    // Obsługa autentykacji
-    function setupAuth() {
-      const loginBtn = document.getElementById('login-btn');
-      const logoutBtn = document.getElementById('logout-btn');
-      
-      loginBtn.addEventListener('click', handleLogin);
-      logoutBtn.addEventListener('click', handleLogout);
-      
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          showCmsPanel();
-          initCMS();
-        } else {
-          showLoginPanel();
-          destroyCMS();
-        }
-      });
-    }
+    // Referencje do elementów DOM
+    const loginPanel = document.getElementById('login-panel');
+    const cmsPanel = document.getElementById('cms-panel');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginError = document.getElementById('login-error');
+    const loginLoading = document.getElementById('login-loading');
+    const cmsLoading = document.getElementById('cms-loading');
+    const cmsRoot = document.getElementById('cms-root');
 
-    // Logowanie
-    async function handleLogin() {
-      showLoading('login-loading');
-      clearError('login-error');
+    // Flagi stanu
+    let cmsInitialized = false;
+
+    // Obsługa logowania
+    loginBtn.addEventListener('click', async () => {
+      loginLoading.style.display = 'block';
+      loginError.textContent = '';
       
       try {
         const provider = new firebase.auth.GithubAuthProvider();
+        provider.addScope('read:user');
         await firebase.auth().signInWithPopup(provider);
       } catch (error) {
-        showError('login-error', `Login failed: ${error.message}`);
+        loginError.textContent = `Login failed: ${error.message}`;
       } finally {
-        hideLoading('login-loading');
+        loginLoading.style.display = 'none';
       }
+    });
+
+    // Obsługa wylogowania
+    logoutBtn.addEventListener('click', () => {
+      firebase.auth().signOut();
+    });
+
+    // Monitorowanie stanu uwierzytelnienia
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        showCMS();
+        initializeCMS();
+      } else {
+        showLogin();
+        cleanupCMS();
+      }
+    });
+
+    // Pokazanie panelu CMS
+    function showCMS() {
+      loginPanel.style.display = 'none';
+      cmsPanel.style.display = 'flex';
     }
 
-    // Wylogowanie
-    function handleLogout() {
-      firebase.auth().signOut();
+    // Pokazanie panelu logowania
+    function showLogin() {
+      loginPanel.style.display = 'flex';
+      cmsPanel.style.display = 'none';
     }
 
     // Inicjalizacja CMS
-    function initCMS() {
-      if (state.cmsInitialized) return;
+    function initializeCMS() {
+      if (cmsInitialized) return;
       
-      showLoading('cms-loading');
+      cmsLoading.style.display = 'block';
       
       const script = document.createElement('script');
       script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+      
       script.onload = () => {
         try {
-          // Nowa instancja CMS w osobnym iframe
-          const cmsFrame = document.createElement('iframe');
-          cmsFrame.style.display = 'none';
-          document.body.appendChild(cmsFrame);
+          // Rejestracja niestandardowego backendu
+          CMS.registerBackend('firebase-git', {
+            init: () => Promise.resolve(),
+            authComponent: () => null
+          });
           
-          cmsFrame.contentWindow.CMS.init();
-          state.cmsInstance = cmsFrame;
-          state.cmsInitialized = true;
-          
-          hideLoading('cms-loading');
+          // Inicjalizacja CMS z opóźnieniem
+          setTimeout(() => {
+            CMS.init();
+            cmsInitialized = true;
+            cmsLoading.style.display = 'none';
+          }, 300);
         } catch (error) {
-          showError('cms-root', `CMS error: ${error.message}`);
+          console.error("CMS initialization error:", error);
+          cmsRoot.innerHTML = `<p class="error">CMS error: ${error.message}</p>`;
         }
       };
       
       script.onerror = () => {
-        showError('cms-root', 'Failed to load CMS');
+        cmsRoot.innerHTML = '<p class="error">Failed to load CMS script</p>';
       };
       
       document.head.appendChild(script);
     }
 
-    // Niszczenie CMS
-    function destroyCMS() {
-      if (state.cmsInstance) {
-        document.body.removeChild(state.cmsInstance);
-        state.cmsInstance = null;
-      }
-      state.cmsInitialized = false;
-      document.getElementById('cms-root').innerHTML = '';
+    // Czyszczenie CMS
+    function cleanupCMS() {
+      if (!cmsInitialized) return;
+      
+      // Usuwanie skryptu CMS
+      const script = document.querySelector('script[src*="decap-cms"]');
+      if (script) script.remove();
+      
+      // Czyszczenie roota
+      cmsRoot.innerHTML = '';
+      cmsInitialized = false;
     }
 
-    // Pokazanie panelu logowania
-    function showLoginPanel() {
-      document.getElementById('login-panel').style.display = 'flex';
-      document.getElementById('cms-panel').style.display = 'none';
-    }
-
-    // Pokazanie panelu CMS
-    function showCmsPanel() {
-      document.getElementById('login-panel').style.display = 'none';
-      document.getElementById('cms-panel').style.display = 'flex';
-    }
-
-    // Pomocnicze funkcje UI
-    function showLoading(id) {
-      document.getElementById(id).style.display = 'block';
-    }
-    
-    function hideLoading(id) {
-      document.getElementById(id).style.display = 'none';
-    }
-    
-    function showError(id, message) {
-      const el = document.getElementById(id);
-      el.textContent = message;
-      el.style.display = 'block';
-    }
-    
-    function clearError(id) {
-      document.getElementById(id).style.display = 'none';
-    }
-
-    // Start aplikacji
-    document.addEventListener('DOMContentLoaded', initFirebase);
+    // Początkowy stan UI
+    showLogin();
   </script>
 </body>
 </html>
