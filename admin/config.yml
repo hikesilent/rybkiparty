@@ -1,0 +1,34 @@
+backend:
+  name: github
+  repo: hikesilent/rybkiparty
+  branch: main
+  auth_scope: public_repo  # "repo" dla prywatnych repozytoriów
+  site_domain: rybki.party  # lub twoja-domena.github.io
+  base_url: https://api.netlify.com  # wymagane dla GitHub OAuth
+  auth_endpoint: https://api.netlify.com/auth
+
+# Dodaj te linie na końcu pliku (poza sekcją backend):
+local_backend: true  # opcjonalnie - pozwala testować lokalnie
+publish_mode: editorial_workflow  # opcjonalnie - dodaje drafty postów
+
+# Client ID i Secret (KLUCZOWE!)
+oauth:
+  client_id: "Ov23liMIWdHfnGZZiH8f"
+  client_secret: "69c649c6f5a029eaf91b95443039c2c305b956a4"
+
+media_folder: "assets/uploads"  # folder na zdjęcia
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "posts"
+    label: "Posty"
+    folder: "_posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+fields:
+      - { name: "title", label: "Tytuł", widget: "string" }
+      - { name: "image", label: "Zdjęcie", widget: "image" }
+      - { name: "tags", label: "Tagi", widget: "list" }
+      - { name: "date", label: "Data", widget: "datetime" }
+      - { name: "body", label: "Treść", widget: "markdown" }
