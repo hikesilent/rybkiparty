@@ -13,6 +13,3 @@
     X-Content-Type-Options = "nosniff"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data:;"
 
-# Enable Git Gateway
-[[plugins]]
-  package = "netlify-plugin-git-gateway"
