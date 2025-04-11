@@ -58,6 +58,10 @@
     .btn:hover {
       opacity: 0.9;
     }
+    .loading {
+      margin: 2rem 0;
+      color: var(--text);
+    }
     .error {
       color: var(--error);
       margin: 1rem 0;
@@ -78,6 +82,7 @@
       <h1>Admin Dashboard</h1>
       <button id="login-btn" class="btn">Login with GitHub</button>
       <div id="auth-error" class="error"></div>
+      <div id="auth-loading" class="loading" style="display: none;">Loading...</div>
     </div>
 
     <!-- CMS Panel -->
@@ -115,6 +120,7 @@
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const authError = document.getElementById('auth-error');
+    const authLoading = document.getElementById('auth-loading');
     const cmsIframe = document.getElementById('cms-iframe');
 
     // State
@@ -137,12 +143,17 @@
 
     // Functions
     async function handleLogin() {
+      authLoading.style.display = 'block';
+      authError.textContent = '';
+      
       try {
         const provider = new firebase.auth.GithubAuthProvider();
         provider.addScope('read:user');
         await firebase.auth().signInWithPopup(provider);
       } catch (error) {
         authError.textContent = `Login failed: ${error.message}`;
+      } finally {
+        authLoading.style.display = 'none';
       }
     }
 
@@ -180,8 +191,8 @@
         <body>
           <div id="nc-root"></div>
           <script>
-            // Wait for both DOM and CMS script to load
-            function initializeCMS() {
+            // Wait for CMS script to load
+            function checkCMS() {
               if (typeof CMS !== 'undefined') {
                 try {
                   CMS.init();
@@ -192,10 +203,10 @@
                     '<p style="color:red;padding:20px;">CMS initialization failed. Please refresh.</p>';
                 }
               } else {
-                setTimeout(initializeCMS, 100);
+                setTimeout(checkCMS, 100);
               }
             }
-            document.addEventListener('DOMContentLoaded', initializeCMS);
+            document.addEventListener('DOMContentLoaded', checkCMS);
           </script>
         </body>
         </html>
