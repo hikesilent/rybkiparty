@@ -10,7 +10,69 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   
   <style>
-    /* Your existing styles */
+    :root {
+      --primary: #24292e;
+      --error: #cb2431;
+      --text: #24292e;
+      --background: #f6f8fa;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: var(--text);
+    }
+    #app-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .panel {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      padding: 2rem;
+    }
+    #auth-panel {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    #cms-panel {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 1rem 0;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .loading {
+      margin: 2rem 0;
+      color: var(--text);
+    }
+    .error {
+      color: var(--error);
+      margin: 1rem 0;
+      max-width: 400px;
+    }
+    #cms-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      min-height: 600px;
+    }
   </style>
 </head>
 <body>
@@ -144,7 +206,7 @@
                 setTimeout(checkCMS, 100);
               }
             }
-            checkCMS();
+            document.addEventListener('DOMContentLoaded', checkCMS);
           </script>
         </body>
         </html>
