@@ -3,9 +3,6 @@ backend:
   repo: hikesilent/rybkiparty
   branch: main
   site_domain: rybki.party
-  base_url: 
-  auth_endpoint: auth
-  auth_scope: public_repo
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
