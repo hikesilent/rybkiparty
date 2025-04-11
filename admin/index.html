@@ -3,27 +3,26 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Decap CMS | Rybki.party</title>
+  <title>Decap CMS</title>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+</head>
+<body>
+  <!-- Dodaj element dla CMS -->
+  <div id="nc-root"></div>
+  
   <script>
-    // Konfiguracja OAuth dla GitHub
     CMS.init({
       config: {
         backend: {
+          name: "github",
+          repo: "hikesilent/rybkiparty",
+          branch: "main",
           auth_scope: "public_repo",
-          oauth_client_id: "Ov23liMIWdHfnGZZiH8f",
-        }
+          oauth_client_id: "Ov23liMIWdHfnGZZiH8f" // Twój Client ID
+        },
+        media_folder: "assets/uploads",
+        public_folder: "/assets/uploads"
       }
-    });
-  </script>
-</head>
-<body>
-  <script>
-    // Automatyczne przekierowanie na logowanie
-    document.addEventListener('DOMContentLoaded', function() {
-      CMS.registerBackend('github', {
-        auth: { /* GitHub sam obsłuży logowanie */ }
-      });
     });
   </script>
 </body>
