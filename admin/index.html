@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel Admina</title>
+  <title>Admin Panel</title>
   
-  <!-- Firebase -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-
+  
   <style>
     :root {
       --primary: #24292e;
@@ -63,29 +63,32 @@
       margin: 1rem 0;
       max-width: 400px;
     }
-    #cms-root {
+    #cms-iframe {
       width: 100%;
+      height: 100%;
+      border: none;
+      min-height: 600px;
     }
   </style>
 </head>
 <body>
   <div id="app-container">
-    <!-- Panel logowania -->
+    <!-- Login Panel -->
     <div id="auth-panel" class="panel">
-      <h1>Panel Administracyjny</h1>
-      <button id="login-btn" class="btn">Zaloguj przez GitHub</button>
+      <h1>Admin Dashboard</h1>
+      <button id="login-btn" class="btn">Login with GitHub</button>
       <div id="auth-error" class="error"></div>
     </div>
 
-    <!-- Panel CMS -->
+    <!-- CMS Panel -->
     <div id="cms-panel" class="panel">
-      <button id="logout-btn" class="btn">Wyloguj</button>
-      <div id="cms-root"></div>
+      <button id="logout-btn" class="btn">Logout</button>
+      <iframe id="cms-iframe" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
     </div>
   </div>
 
   <script>
-    // Konfiguracja Firebase - ZASTĄP SWOIMI DANYMI
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIzaSyDv8zijZhIP3ceuGEyGI2RA4OSnh9iXqHc",
       authDomain: "rybki-party.firebaseapp.com",
@@ -96,87 +99,120 @@
       measurementId: "G-G8KF8YWEP0"
     };
 
-    // Inicjalizacja Firebase
+    // Initialize Firebase
     try {
-      firebase.initializeApp(firebaseConfig);
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
     } catch (error) {
-      console.error("Błąd inicjalizacji Firebase:", error);
-      document.getElementById('auth-error').textContent = "Błąd inicjalizacji systemu";
+      document.getElementById('auth-error').textContent = "Firebase initialization failed";
+      console.error("Firebase init error:", error);
     }
 
-    // Referencje do elementów DOM
+    // DOM Elements
     const authPanel = document.getElementById('auth-panel');
     const cmsPanel = document.getElementById('cms-panel');
     const loginBtn = document.getElementById('login-btn');
     const logoutBtn = document.getElementById('logout-btn');
     const authError = document.getElementById('auth-error');
-    const cmsRoot = document.getElementById('cms-root');
+    const cmsIframe = document.getElementById('cms-iframe');
 
-    // Flaga stanu CMS
-    let cmsInitialized = false;
+    // State
+    let cmsLoaded = false;
 
-    // Obsługa logowania
-    loginBtn.addEventListener('click', async () => {
+    // Event Listeners
+    loginBtn.addEventListener('click', handleLogin);
+    logoutBtn.addEventListener('click', handleLogout);
+
+    // Auth State Observer
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        showCMS();
+        loadCMS();
+      } else {
+        showAuth();
+        unloadCMS();
+      }
+    });
+
+    // Functions
+    async function handleLogin() {
       try {
         const provider = new firebase.auth.GithubAuthProvider();
         provider.addScope('read:user');
         await firebase.auth().signInWithPopup(provider);
       } catch (error) {
-        authError.textContent = `Błąd logowania: ${error.message}`;
+        authError.textContent = `Login failed: ${error.message}`;
       }
-    });
-
-    // Obsługa wylogowania
-    logoutBtn.addEventListener('click', () => {
-      firebase.auth().signOut();
-    });
-
-    // Monitorowanie stanu uwierzytelnienia
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        // Użytkownik zalogowany
-        authPanel.style.display = 'none';
-        cmsPanel.style.display = 'flex';
-        
-        // Inicjalizacja CMS tylko raz
-        if (!cmsInitialized) {
-          initCMS();
-        }
-      } else {
-        // Użytkownik wylogowany
-        authPanel.style.display = 'flex';
-        cmsPanel.style.display = 'none';
-      }
-    });
-
-    // Inicjalizacja CMS
-    function initCMS() {
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-      
-      script.onload = () => {
-        try {
-          // Wyłączenie wbudowanej autentykacji Decap
-          CMS.registerBackend('firebase-git', {
-            init: () => Promise.resolve(),
-            authComponent: () => null
-          });
-          
-          CMS.init();
-          cmsInitialized = true;
-          console.log('CMS zainicjalizowany pomyślnie');
-        } catch (error) {
-          console.error('Błąd inicjalizacji CMS:', error);
-          cmsRoot.innerHTML = `<p class="error">Błąd ładowania panelu admina</p>`;
-        }
-      };
-      
-      script.onerror = () => {
-        cmsRoot.innerHTML = '<p class="error">Błąd ładowania skryptu CMS</p>';
-      };
-      
-      document.head.appendChild(script);
     }
+
+    function handleLogout() {
+      firebase.auth().signOut();
+    }
+
+    function showCMS() {
+      authPanel.style.display = 'none';
+      cmsPanel.style.display = 'flex';
+    }
+
+    function showAuth() {
+      authPanel.style.display = 'flex';
+      cmsPanel.style.display = 'none';
+    }
+
+    function loadCMS() {
+      if (cmsLoaded) return;
+      
+      // Create CMS iframe content
+      cmsIframe.srcdoc = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>CMS Panel</title>
+          <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+          <link href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" rel="stylesheet">
+          <style>
+            body { margin: 0; padding: 0; }
+            #nc-root { padding: 20px; }
+          </style>
+        </head>
+        <body>
+          <div id="nc-root"></div>
+          <script>
+            // Wait for both DOM and CMS script to load
+            function initializeCMS() {
+              if (typeof CMS !== 'undefined') {
+                try {
+                  CMS.init();
+                  console.log("CMS initialized successfully");
+                } catch (error) {
+                  console.error("CMS init error:", error);
+                  document.getElementById('nc-root').innerHTML = 
+                    '<p style="color:red;padding:20px;">CMS initialization failed. Please refresh.</p>';
+                }
+              } else {
+                setTimeout(initializeCMS, 100);
+              }
+            }
+            document.addEventListener('DOMContentLoaded', initializeCMS);
+          </script>
+        </body>
+        </html>
+      `;
+      
+      cmsLoaded = true;
+    }
+
+    function unloadCMS() {
+      if (cmsLoaded) {
+        cmsIframe.srcdoc = '';
+        cmsLoaded = false;
+      }
+    }
+
+    // Initial state
+    showAuth();
   </script>
 </body>
 </html>
