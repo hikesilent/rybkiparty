@@ -1,8 +1,6 @@
 backend:
-  name: github
-  repo: hikesilent/rybkiparty
+  name: git-gateway
   branch: main
-  auth_scope: public_repo
 
   commit_messages:
     create: "Create {{collection}} “{{slug}}”"
@@ -27,3 +25,7 @@ collections:
       - { name: "body", label: "Treść", widget: "markdown" }
       - { name: "image", label: "Zdjęcie", widget: "image", required: false }
       - { name: "tags", label: "Tagi", widget: "list", required: false }
+      
+# Konfiguracja autentykacji
+publish_mode: editorial_workflow
+show_preview_links: true
