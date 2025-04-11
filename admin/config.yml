@@ -4,8 +4,16 @@ backend:
   branch: main
   site_domain: rybki.party
 
+  commit_messages:
+    create: "Create {{collection}} “{{slug}}”"
+    update: "Update {{collection}} “{{slug}}”"
+    delete: "Delete {{collection}} “{{slug}}”"
+    uploadMedia: "Upload “{{path}}”"
+    deleteMedia: "Delete “{{path}}”"
+    
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
+
 
 collections:
   - name: "posts"
