@@ -3,6 +3,7 @@ backend:
   branch: main
 
 local_backend: false
+site_url: https://rybkiparty.netlify.app
 
 media_folder: "static/admin/uploads"
 public_folder: "/admin/uploads"
