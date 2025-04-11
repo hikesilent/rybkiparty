@@ -78,13 +78,13 @@
     <script>
         // Konfiguracja Firebase
         const firebaseConfig = {
-      apiKey: "AIzaSyDv8zijZhIP3ceuGEyGI2RA4OSnh9iXqHc",
-      authDomain: "rybki-party.firebaseapp.com",
-      projectId: "rybki-party",
-      storageBucket: "rybki-party.appspot.com",
-      messagingSenderId: "985551857623",
-      appId: "1:985551857623:web:5b66f04f0708c3feca0d92",
-      measurementId: "G-G8KF8YWEP0"
+            apiKey: "AIzaSyDv8zijZhIP3ceuGEyGI2RA4OSnh9iXqHc",
+            authDomain: "rybki-party.firebaseapp.com",
+            projectId: "rybki-party",
+            storageBucket: "rybki-party.appspot.com",
+            messagingSenderId: "985551857623",
+            appId: "1:985551857623:web:5b66f04f0708c3feca0d92",
+            measurementId: "G-G8KF8YWEP0"
         };
 
         // Globalny stan
@@ -154,13 +154,14 @@
             script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
             script.onload = () => {
                 try {
-                    // Poczekaj, aż CMS będzie zdefiniowany
+                    let cmsFrame; // Deklaracja cmsFrame przed setInterval
+
                     const checkCMS = setInterval(() => {
-                        if (cmsFrame.contentWindow.CMS) {
-                            clearInterval(checkCMS); // Zatrzymaj sprawdzanie
-                            const cmsFrame = document.createElement('iframe');
+                        if (window.CMS) { // Sprawdzanie czy CMS jest zdefiniowane w globalnym oknie.
+                            clearInterval(checkCMS);
+                            cmsFrame = document.createElement('iframe');
                             cmsFrame.style.display = 'none';
-                            cmsFrame.setAttribute('allow-scripts', 'true'); // Dodaj atrybut
+                            cmsFrame.setAttribute('allow-scripts', 'true');
                             document.body.appendChild(cmsFrame);
 
                             cmsFrame.contentWindow.CMS.init();
@@ -169,7 +170,7 @@
 
                             hideLoading('cms-loading');
                         }
-                    }, 100); // Sprawdzaj co 100ms
+                    }, 100);
                 } catch (error) {
                     showError('cms-root', `CMS error: ${error.message}`);
                 }
