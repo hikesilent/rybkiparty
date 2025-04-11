@@ -2,47 +2,17 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Logowanie Admin</title>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-  <style>
-    body { font-family: sans-serif; text-align: center; margin-top: 100px; }
-    input, button { margin: 10px; padding: 10px; font-size: 16px; }
-  </style>
-  <script>
-    const firebaseConfig = {
-  apiKey: "AIzaSyDv8zijZhIP3ceuGEyGI2RA4OSnh9iXqHc",
-  authDomain: "rybki-party.firebaseapp.com",
-  projectId: "rybki-party",
-  storageBucket: "rybki-party.firebasestorage.app",
-  messagingSenderId: "985551857623",
-  appId: "1:985551857623:web:5b66f04f0708c3feca0d92",
-  measurementId: "G-G8KF8YWEP0"
-    };
-    firebase.initializeApp(firebaseConfig);
-  </script>
+  <title>Decap CMS</title>
+  <script src="https://cdn.jsdelivr.net/npm/@decapcms/admin@2.0.0/dist/decapcms.js"></script>
 </head>
 <body>
-  <h2>Panel administratora</h2>
-  <form onsubmit="login(event)">
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Hasło" required><br>
-    <button type="submit">Zaloguj</button>
-  </form>
   <script>
-    function login(e) {
-      e.preventDefault();
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(() => {
-          window.location.href = "panel.html";
-        })
-        .catch((error) => {
-          alert("Błąd: " + error.message);
-        });
-    }
+    DecapCMS.init({
+      config: "/admin/config.yml"
+    });
   </script>
+<button id="login" onclick="signIn()">Zaloguj przez Google</button>
+<button id="logout" onclick="signOut()" style="display:none;">Wyloguj</button>
+
 </body>
 </html>
