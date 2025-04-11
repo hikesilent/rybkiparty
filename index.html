@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rybki Party - Kanał dla prawdziwych wędkarzy</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Rybki Party - Kanał dla prawdziwych wędkarzy">
+    <meta property="og:description" content="Dołącz do naszej społeczności pasjonatów wędkarstwa!">
+    <meta property="og:image" content="logo-transparent.png">
+    <meta property="og:url" content="https://rybki.party">
+    <meta name="twitter:card" content="summary_large_image">
+    
     <style>
         :root {
             --primary: #0077b6;
@@ -43,7 +54,21 @@
             z-index: 1;
         }
         
-        .logo {
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .logo-img {
+            height: 120px;
+            width: auto;
+            /* Tutaj możesz dodać filtr jeśli logo nie ma przezroczystego tła */
+            /* filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.7)); */
+        }
+        
+        .logo-text {
             font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
@@ -196,8 +221,12 @@
         }
         
         @media (max-width: 768px) {
-            .logo {
+            .logo-text {
                 font-size: 2.5rem;
+            }
+            
+            .logo-img {
+                height: 80px;
             }
             
             .slogan {
@@ -213,7 +242,11 @@
 </head>
 <body>
     <section class="hero">
-        <h1 class="logo">Rybki.party</h1>
+        <div class="logo-container">
+            <!-- Wstaw swoje logo-transparent.png -->
+            <img src="logo-transparent.png" alt="Rybki Party Logo" class="logo-img">
+            <h1 class="logo-text">Rybki.party</h1>
+        </div>
         <p class="slogan">Kanał dla prawdziwych wędkarzy</p>
     </section>
     
