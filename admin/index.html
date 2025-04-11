@@ -89,9 +89,7 @@
       measurementId: "G-G8KF8YWEP0"
     };
 
-    let cmsInitialized = false;
-    let cmsScript = null;
-
+    // Inicjalizacja Firebase
     function initFirebase() {
       try {
         if (!firebase.apps.length) {
@@ -103,8 +101,26 @@
       }
     }
 
+    // Obsługa autentykacji
+    function setupAuth() {
+      document.getElementById('login-btn').addEventListener('click', handleLogin);
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+      
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          showCmsPanel();
+          loadCMS();
+        } else {
+          showLoginPanel();
+        }
+      });
+    }
+
+    // Logowanie
     async function handleLogin() {
       showLoading('login-loading');
+      clearError('login-error');
+      
       try {
         const provider = new firebase.auth.GithubAuthProvider();
         await firebase.auth().signInWithPopup(provider);
@@ -115,40 +131,48 @@
       }
     }
 
+    // Wylogowanie
     function handleLogout() {
-      if (cmsInitialized) {
-        destroyCMS();
-      }
       firebase.auth().signOut();
     }
 
+    // Ładowanie CMS
     function loadCMS() {
-      return new Promise((resolve, reject) => {
-        if (cmsInitialized) return resolve();
-
-        cmsScript = document.createElement('script');
-        cmsScript.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-        cmsScript.onload = () => {
-          try {
-            CMS.init();
-            cmsInitialized = true;
-            resolve();
-          } catch (error) {
-            reject(error);
-          }
-        };
-        cmsScript.onerror = reject;
-        document.head.appendChild(cmsScript);
+      const iframe = document.getElementById('cms-iframe');
+      iframe.srcdoc = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <title>CMS</title>
+          <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              try {
+                CMS.init();
+                console.log('CMS initialized successfully');
+                window.parent.postMessage('cms-ready', '*');
+              } catch (error) {
+                console.error('CMS error:', error);
+                window.parent.postMessage('cms-error', '*');
+              }
+            });
+          </script>
+        </head>
+        <body>
+          <div id="nc-root"></div>
+        </body>
+        </html>
+      `;
+      
+      // Nasłuchiwanie komunikatów z iframe
+      window.addEventListener('message', (event) => {
+        if (event.data === 'cms-ready') {
+          console.log('CMS loaded successfully');
+        } else if (event.data === 'cms-error') {
+          showError('cms-panel', 'Failed to initialize CMS');
+        }
       });
-    }
-
-    function destroyCMS() {
-      if (cmsScript) {
-        document.head.removeChild(cmsScript);
-        cmsScript = null;
-      }
-      document.getElementById('cms-root').innerHTML = '';
-      cmsInitialized = false;
     }
 
     // Pokazanie panelu logowania
