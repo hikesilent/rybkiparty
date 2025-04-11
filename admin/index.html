@@ -3,12 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Content Manager</title>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <title>Admin Panel</title>
+  
   <!-- Firebase Auth -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   
   <script>
     // Inicjalizacja Firebase
@@ -22,7 +21,7 @@
   measurementId: "G-G8KF8YWEP0"
     });
 
-    // Zabezpieczenie admina
+    // Zabezpieczenie panelu admina
     firebase.auth().onAuthStateChanged(function(user) {
       if (!user) {
         window.location.href = '/';
@@ -31,7 +30,6 @@
           if (!idTokenResult.claims.admin) {
             window.location.href = '/';
           } else {
-            // Dopiero po weryfikacji ładujemy CMS
             loadCMS();
           }
         });
@@ -44,6 +42,12 @@
       script.onload = () => {
         const cmsScript = document.createElement('script');
         cmsScript.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+        cmsScript.onload = () => {
+          // Opóźnienie inicjalizacji aby uniknąć błędów
+          setTimeout(() => {
+            CMS.init();
+          }, 200);
+        };
         document.head.appendChild(cmsScript);
       };
       document.head.appendChild(script);
@@ -51,13 +55,17 @@
   </script>
 </head>
 <body>
-  <!-- Pusty kontener dla CMS -->
   <div id="nc-root"></div>
   
+  <!-- Loading indicator -->
+  <div id="loading" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    Ładowanie panelu admina...
+  </div>
+  
   <script>
-    // Inicjalizacja CMS po załadowaniu
+    // Ukryj loading gdy CMS jest gotowy
     if (typeof CMS !== 'undefined') {
-      CMS.init();
+      document.getElementById('loading').style.display = 'none';
     }
   </script>
 </body>

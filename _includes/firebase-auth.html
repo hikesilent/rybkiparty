@@ -1,8 +1,6 @@
-<!-- Firebase App (the core Firebase SDK) -->
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-
-<!-- Firebase Authentication -->
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 
 <script>
   // Inicjalizacja Firebase
@@ -16,44 +14,22 @@
   measurementId: "G-G8KF8YWEP0"
   });
 
-  // Obsługa stanu uwierzytelnienia
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      // Użytkownik zalogowany
-      console.log('Zalogowany:', user);
-      document.querySelector('.login-btn').style.display = 'none';
-      document.querySelector('.logout-btn').style.display = 'block';
-      document.querySelector('.admin-btn').style.display = 'block';
-    } else {
-      // Użytkownik wylogowany
-      console.log('Wylogowany');
-      document.querySelector('.login-btn').style.display = 'block';
-      document.querySelector('.logout-btn').style.display = 'none';
-      document.querySelector('.admin-btn').style.display = 'none';
-    }
-  });
-
-  // Funkcja logowania przez GitHub
+  // Funkcje autentykacji
   function signInWithGitHub() {
     const provider = new firebase.auth.GithubAuthProvider();
+    provider.addScope('read:user');
+    
     firebase.auth().signInWithPopup(provider)
       .then((result) => {
-        // Zalogowano pomyślnie
         console.log('Zalogowano:', result.user);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error('Błąd logowania:', error);
       });
   }
 
-  // Funkcja wylogowania
   function signOut() {
-    firebase.auth().signOut()
-      .then(() => {
-        console.log('Wylogowano pomyślnie');
-      })
-      .catch((error) => {
-        console.error('Błąd wylogowania:', error);
-      });
+    firebase.auth().signOut().then(() => {
+      console.log('Wylogowano');
+    });
   }
 </script>
