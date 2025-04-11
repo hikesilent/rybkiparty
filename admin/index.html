@@ -10,40 +10,70 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   
   <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-    #login-container, #cms-container { text-align: center; margin-top: 50px; }
-    button { 
-      background: #24292e; color: white; 
-      border: none; padding: 10px 20px; 
-      border-radius: 5px; cursor: pointer;
-      margin: 10px;
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 0; 
+      padding: 0; 
+      background: #f5f5f5;
     }
-    #cms-container { display: none; }
-    #init-error { color: red; font-weight: bold; }
+    #app-container {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    #auth-container, #cms-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #cms-container {
+      display: none;
+      width: 100%;
+    }
+    #nc-root {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    button {
+      background: #24292e;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    #loading {
+      margin: 20px;
+      font-size: 18px;
+    }
   </style>
 </head>
 <body>
+  <div id="app-container">
+    <!-- Kontener logowania -->
+    <div id="auth-container">
+      <h1>Logowanie do panelu admina</h1>
+      <button id="github-login">Zaloguj przez GitHub</button>
+      <p id="auth-error" style="color: red;"></p>
+      <div id="loading" style="display: none;">Trwa ładowanie...</div>
+    </div>
 
-<!-- Komunikat o błędzie inicjalizacji -->
-<div id="init-error"></div>
+    <!-- Kontener CMS -->
+    <div id="cms-container">
+      <button id="logout-btn">Wyloguj</button>
+      <div id="nc-root"></div>
+    </div>
+  </div>
 
-<!-- Ekran logowania -->
-<div id="login-container">
-  <h1>Logowanie do panelu</h1>
-  <button id="github-login" disabled>Zaloguj przez GitHub</button>
-  <p id="error-message" style="color: red;"></p>
-</div>
-
-<!-- Kontener CMS -->
-<div id="cms-container">
-  <h1>Witaj w panelu admina!</h1>
-  <button id="logout-btn">Wyloguj</button>
-  <div id="nc-root"></div>
-</div>
-
-<script>
-  // Konfiguracja Firebase - ZASTĄP TYMI WARTOŚCIAMI Z TWOJEGO PROJEKTU
-  const firebaseConfig = {
+  <script>
+    // Konfiguracja Firebase - ZASTĄP SWOIMI WARTOŚCIAMI
+    const firebaseConfig = {
   apiKey: "AIzaSyDv8zijZhIP3ceuGEyGI2RA4OSnh9iXqHc",
   authDomain: "rybki-party.firebaseapp.com",
   projectId: "rybki-party",
@@ -51,88 +81,111 @@
   messagingSenderId: "985551857623",
   appId: "1:985551857623:web:5b66f04f0708c3feca0d92",
   measurementId: "G-G8KF8YWEP0"
-  };
+    };
 
-  // Sprawdź czy Firebase jest już zainicjalizowany
-  function initializeFirebase() {
-    try {
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-        console.log("Firebase zainicjalizowany poprawnie");
-        document.getElementById('github-login').disabled = false;
-      } else {
-        firebase.app(); // Użyj istniejącej instancji
-      }
-      setupAuth();
-    } catch (error) {
-      console.error("Błąd inicjalizacji Firebase:", error);
-      document.getElementById('init-error').textContent = 
-        "Błąd inicjalizacji systemu logowania. Odśwież stronę.";
-    }
-  }
+    // Zmienna do śledzenia stanu CMS
+    let cmsInitialized = false;
 
-  // Obsługa autentykacji
-  function setupAuth() {
-    const loginContainer = document.getElementById('login-container');
-    const cmsContainer = document.getElementById('cms-container');
-    const errorMessage = document.getElementById('error-message');
-    const loginBtn = document.getElementById('github-login');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    // Logowanie przez GitHub
-    loginBtn.addEventListener('click', () => {
-      const provider = new firebase.auth.GithubAuthProvider();
-      firebase.auth().signInWithPopup(provider)
-        .catch(error => {
-          errorMessage.textContent = `Błąd logowania: ${error.message}`;
-        });
-    });
-
-    // Wylogowanie
-    logoutBtn.addEventListener('click', () => {
-      firebase.auth().signOut();
-    });
-
-    // Monitorowanie stanu logowania
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        loginContainer.style.display = 'none';
-        cmsContainer.style.display = 'block';
-        loadCMS();
-      } else {
-        loginContainer.style.display = 'block';
-        cmsContainer.style.display = 'none';
-      }
-    });
-  }
-
-  // Ładowanie Decap CMS
-  function loadCMS() {
-    if (typeof CMS !== 'undefined') {
-      CMS.init();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-    script.onload = () => {
-      setTimeout(() => {
-        try {
-          CMS.init();
-          console.log("Decap CMS zainicjalizowany");
-        } catch (cmsError) {
-          console.error("Błąd inicjalizacji CMS:", cmsError);
+    // Inicjalizacja Firebase
+    function initializeFirebase() {
+      try {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+          console.log("Firebase initialized");
         }
-      }, 100);
-    };
-    script.onerror = () => {
-      console.error("Nie udało się załadować skryptu CMS");
-    };
-    document.head.appendChild(script);
-  }
+        setupAuth();
+      } catch (error) {
+        console.error("Firebase init error:", error);
+        document.getElementById('auth-error').textContent = 
+          "Błąd inicjalizacji systemu. Odśwież stronę.";
+      }
+    }
 
-  // Inicjalizacja po załadowaniu strony
-  document.addEventListener('DOMContentLoaded', initializeFirebase);
-</script>
+    // Obsługa autentykacji
+    function setupAuth() {
+      const authContainer = document.getElementById('auth-container');
+      const cmsContainer = document.getElementById('cms-container');
+      const loginBtn = document.getElementById('github-login');
+      const logoutBtn = document.getElementById('logout-btn');
+      const loading = document.getElementById('loading');
+
+      // Logowanie przez GitHub
+      loginBtn.addEventListener('click', () => {
+        loading.style.display = 'block';
+        const provider = new firebase.auth.GithubAuthProvider();
+        provider.addScope('read:user');
+        
+        firebase.auth().signInWithPopup(provider)
+          .catch(error => {
+            loading.style.display = 'none';
+            document.getElementById('auth-error').textContent = 
+              `Błąd logowania: ${error.message}`;
+          });
+      });
+
+      // Wylogowanie
+      logoutBtn.addEventListener('click', () => {
+        if (cmsInitialized) {
+          // Czyszczenie CMS przed wylogowaniem
+          const cmsRoot = document.getElementById('nc-root');
+          if (cmsRoot) cmsRoot.innerHTML = '';
+          cmsInitialized = false;
+        }
+        firebase.auth().signOut();
+      });
+
+      // Monitorowanie stanu logowania
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          authContainer.style.display = 'none';
+          cmsContainer.style.display = 'flex';
+          loadCMS();
+        } else {
+          authContainer.style.display = 'flex';
+          cmsContainer.style.display = 'none';
+          loading.style.display = 'none';
+        }
+      });
+    }
+
+    // Ładowanie Decap CMS
+    function loadCMS() {
+      if (cmsInitialized) return;
+      
+      const loading = document.getElementById('loading');
+      loading.style.display = 'block';
+
+      // Dynamiczne ładowanie skryptu CMS
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+      
+      script.onload = () => {
+        // Dodatkowe opóźnienie dla pewności
+        setTimeout(() => {
+          try {
+            CMS.init();
+            console.log("CMS initialized");
+            cmsInitialized = true;
+          } catch (error) {
+            console.error("CMS init error:", error);
+            document.getElementById('auth-error').textContent = 
+              "Błąd ładowania panelu admina. Odśwież stronę.";
+          }
+          loading.style.display = 'none';
+        }, 300);
+      };
+      
+      script.onerror = () => {
+        loading.style.display = 'none';
+        document.getElementById('auth-error').textContent = 
+          "Nie udało się załadować panelu admina.";
+      };
+      
+      document.head.appendChild(script);
+    }
+
+    // Start aplikacji
+    document.addEventListener('DOMContentLoaded', initializeFirebase);
+  </script>
 </body>
 </html>
