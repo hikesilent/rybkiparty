@@ -23,7 +23,7 @@
 
     // Prosta weryfikacja
     firebase.auth().onAuthStateChanged(user => {
-      if (!user) window.location.href = "/";
+
       else {
         // Załaduj CMS po zalogowaniu
         const cmsScript = document.createElement('script');
@@ -35,5 +35,8 @@
 </head>
 <body>
   <div id="nc-root"></div>
+<button onclick="firebase.auth().signInWithPopup(new firebase.auth.GithubAuthProvider())">
+  Zaloguj przez GitHub
+</button>
 </body>
 </html>
