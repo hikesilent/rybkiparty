@@ -26,6 +26,3 @@ collections:
       - { name: "image", label: "Zdjęcie", widget: "image", required: false }
       - { name: "tags", label: "Tagi", widget: "list", required: false }
       
-# Konfiguracja autentykacji
-publish_mode: editorial_workflow
-show_preview_links: true

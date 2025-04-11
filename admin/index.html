@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel</title>
+  <title>Content Manager</title>
   
   <!-- Firebase Auth -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -21,52 +21,19 @@
   measurementId: "G-G8KF8YWEP0"
     });
 
-    // Zabezpieczenie panelu admina
-    firebase.auth().onAuthStateChanged(function(user) {
-      if (!user) {
-        window.location.href = '/';
-      } else {
-        user.getIdTokenResult().then((idTokenResult) => {
-          if (!idTokenResult.claims.admin) {
-            window.location.href = '/';
-          } else {
-            loadCMS();
-          }
-        });
-      }
-    });
-
-    function loadCMS() {
-      const script = document.createElement('script');
-      script.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
-      script.onload = () => {
+    // Prosta weryfikacja
+    firebase.auth().onAuthStateChanged(user => {
+      if (!user) window.location.href = "/";
+      else {
+        // Załaduj CMS po zalogowaniu
         const cmsScript = document.createElement('script');
         cmsScript.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-        cmsScript.onload = () => {
-          // Opóźnienie inicjalizacji aby uniknąć błędów
-          setTimeout(() => {
-            CMS.init();
-          }, 200);
-        };
         document.head.appendChild(cmsScript);
-      };
-      document.head.appendChild(script);
-    }
+      }
+    });
   </script>
 </head>
 <body>
   <div id="nc-root"></div>
-  
-  <!-- Loading indicator -->
-  <div id="loading" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-    Ładowanie panelu admina...
-  </div>
-  
-  <script>
-    // Ukryj loading gdy CMS jest gotowy
-    if (typeof CMS !== 'undefined') {
-      document.getElementById('loading').style.display = 'none';
-    }
-  </script>
 </body>
 </html>
