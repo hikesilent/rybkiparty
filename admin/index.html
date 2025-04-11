@@ -147,37 +147,59 @@
       firebase.auth().signOut();
     }
 
-    // Inicjalizacja CMS
-    function initCMS() {
-      if (state.cmsInitialized) return;
-      
-      showLoading('cms-loading');
-      
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
-      script.onload = () => {
-        try {
-          // Nowa instancja CMS w osobnym iframe
-          const cmsFrame = document.createElement('iframe');
-          cmsFrame.style.display = 'none';
-          document.body.appendChild(cmsFrame);
-          
-          cmsFrame.contentWindow.CMS.init();
-          state.cmsInstance = cmsFrame;
-          state.cmsInitialized = true;
-          
-          hideLoading('cms-loading');
-        } catch (error) {
-          showError('cms-root', `CMS error: ${error.message}`);
+function initCMS() {
+  if (state.cmsInitialized) return;
+
+  showLoading('cms-loading');
+
+  const script = document.createElement('script');
+  script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+  script.onload = () => {
+    try {
+      // Sprawdź, czy CMS jest dostępny globalnie
+      if (typeof window.CMS === 'undefined') {
+        throw new Error('CMS is not available in window');
+      }
+
+      // Inicjalizacja CMS z konfiguracją
+      window.CMS.init({
+        config: {
+          backend: {
+            name: "git-gateway", // lub "github" w zależności od używanego backendu
+            branch: "main"       // dostosuj, jeśli masz inną nazwę głównej gałęzi
+          },
+          media_folder: "public/uploads",
+          public_folder: "/uploads",
+          collections: [
+            {
+              name: "posts",
+              label: "Posty",
+              folder: "content/posts",
+              create: true,
+              slug: "{{slug}}",
+              fields: [
+                { label: "Tytuł", name: "title", widget: "string" },
+                { label: "Treść", name: "body", widget: "markdown" }
+              ]
+            }
+          ]
         }
-      };
-      
-      script.onerror = () => {
-        showError('cms-root', 'Failed to load CMS');
-      };
-      
-      document.head.appendChild(script);
+      });
+
+      state.cmsInitialized = true;
+      hideLoading('cms-loading');
+    } catch (error) {
+      showError('cms-root', `CMS error: ${error.message}`);
     }
+  };
+
+  script.onerror = () => {
+    showError('cms-root', 'Failed to load CMS');
+  };
+
+  document.head.appendChild(script);
+}
+
 
     // Niszczenie CMS
     function destroyCMS() {
