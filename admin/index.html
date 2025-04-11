@@ -154,21 +154,26 @@
             script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
             script.onload = () => {
                 try {
-                    let cmsFrame; // Deklaracja cmsFrame przed setInterval
+                    let cmsFrame;
 
                     const checkCMS = setInterval(() => {
-                        if (window.CMS) { // Sprawdzanie czy CMS jest zdefiniowane w globalnym oknie.
+                        if (window.CMS) {
                             clearInterval(checkCMS);
                             cmsFrame = document.createElement('iframe');
                             cmsFrame.style.display = 'none';
                             cmsFrame.setAttribute('allow-scripts', 'true');
                             document.body.appendChild(cmsFrame);
 
-                            cmsFrame.contentWindow.CMS.init();
-                            state.cmsInstance = cmsFrame;
-                            state.cmsInitialized = true;
-
-                            hideLoading('cms-loading');
+                            // Dodatkowe sprawdzenie, czy CMS jest zdefiniowane w iframe
+                            const checkIframeCMS = setInterval(() => {
+                                if (cmsFrame.contentWindow.CMS) {
+                                    clearInterval(checkIframeCMS);
+                                    cmsFrame.contentWindow.CMS.init();
+                                    state.cmsInstance = cmsFrame;
+                                    state.cmsInitialized = true;
+                                    hideLoading('cms-loading');
+                                }
+                            }, 100);
                         }
                     }, 100);
                 } catch (error) {
