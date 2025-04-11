@@ -2,7 +2,6 @@ backend:
   name: git-gateway
   branch: main
 
-# Logowanie tylko przez Google (wyłączamy lokalne)
 local_backend: false
 
 media_folder: "assets/uploads"
