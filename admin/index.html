@@ -10,64 +10,87 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      margin: 0; 
-      padding: 0; 
-      background: #f5f5f5;
+    :root {
+      --primary-color: #24292e;
+      --error-color: #cb2431;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f6f8fa;
     }
     #app-container {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
     }
-    #auth-container, #cms-container {
+    .panel {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 2rem;
     }
-    #cms-container {
+    #auth-panel {
+      text-align: center;
+    }
+    #cms-panel {
       display: none;
       width: 100%;
     }
-    #nc-root {
+    #cms-root {
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
+      padding: 1rem;
     }
-    button {
-      background: #24292e;
+    .btn {
+      background: var(--primary-color);
       color: white;
       border: none;
-      padding: 12px 24px;
-      border-radius: 4px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
-      margin: 10px 0;
+      font-size: 1rem;
+      margin: 1rem 0;
+      transition: opacity 0.2s;
     }
-    #loading {
-      margin: 20px;
-      font-size: 18px;
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .loading {
+      margin: 2rem;
+      font-size: 1.1rem;
+      color: #586069;
+    }
+    .error {
+      color: var(--error-color);
+      margin: 1rem 0;
+      max-width: 400px;
     }
   </style>
 </head>
 <body>
   <div id="app-container">
-    <!-- Kontener logowania -->
-    <div id="auth-container">
-      <h1>Logowanie do panelu admina</h1>
-      <button id="github-login">Zaloguj przez GitHub</button>
-      <p id="auth-error" style="color: red;"></p>
-      <div id="loading" style="display: none;">Trwa ładowanie...</div>
+    <!-- Panel logowania -->
+    <div id="auth-panel" class="panel">
+      <h1>Admin Dashboard</h1>
+      <button id="login-btn" class="btn" disabled>Login with GitHub</button>
+      <div id="auth-error" class="error"></div>
+      <div id="auth-loading" class="loading" style="display: none;">Initializing...</div>
     </div>
 
-    <!-- Kontener CMS -->
-    <div id="cms-container">
-      <button id="logout-btn">Wyloguj</button>
-      <div id="nc-root"></div>
+    <!-- Panel CMS -->
+    <div id="cms-panel" class="panel">
+      <button id="logout-btn" class="btn">Logout</button>
+      <div id="cms-loading" class="loading">Loading CMS...</div>
+      <div id="cms-root"></div>
     </div>
   </div>
 
@@ -83,109 +106,162 @@
   measurementId: "G-G8KF8YWEP0"
     };
 
-    // Zmienna do śledzenia stanu CMS
-    let cmsInitialized = false;
+    // Globalny stan aplikacji
+    const state = {
+      cmsInitialized: false,
+      cmsScriptLoaded: false,
+      currentUser: null
+    };
 
     // Inicjalizacja Firebase
     function initializeFirebase() {
       try {
         if (!firebase.apps.length) {
           firebase.initializeApp(firebaseConfig);
-          console.log("Firebase initialized");
+          console.log("Firebase initialized successfully");
         }
-        setupAuth();
+        enableLogin();
+        setupAuthListeners();
       } catch (error) {
-        console.error("Firebase init error:", error);
-        document.getElementById('auth-error').textContent = 
-          "Błąd inicjalizacji systemu. Odśwież stronę.";
+        showError("auth-error", `Firebase init error: ${error.message}`);
       }
     }
 
-    // Obsługa autentykacji
-    function setupAuth() {
-      const authContainer = document.getElementById('auth-container');
-      const cmsContainer = document.getElementById('cms-container');
-      const loginBtn = document.getElementById('github-login');
-      const logoutBtn = document.getElementById('logout-btn');
-      const loading = document.getElementById('loading');
+    // Włącz przycisk logowania po inicjalizacji
+    function enableLogin() {
+      document.getElementById('login-btn').disabled = false;
+      document.getElementById('login-btn').addEventListener('click', handleLogin);
+    }
 
-      // Logowanie przez GitHub
-      loginBtn.addEventListener('click', () => {
-        loading.style.display = 'block';
+    // Obsługa logowania
+    async function handleLogin() {
+      showLoading("auth-loading");
+      hideError("auth-error");
+      
+      try {
         const provider = new firebase.auth.GithubAuthProvider();
         provider.addScope('read:user');
-        
-        firebase.auth().signInWithPopup(provider)
-          .catch(error => {
-            loading.style.display = 'none';
-            document.getElementById('auth-error').textContent = 
-              `Błąd logowania: ${error.message}`;
-          });
-      });
+        await firebase.auth().signInWithPopup(provider);
+      } catch (error) {
+        hideLoading("auth-loading");
+        showError("auth-error", `Login failed: ${error.message}`);
+      }
+    }
 
-      // Wylogowanie
-      logoutBtn.addEventListener('click', () => {
-        if (cmsInitialized) {
-          // Czyszczenie CMS przed wylogowaniem
-          const cmsRoot = document.getElementById('nc-root');
-          if (cmsRoot) cmsRoot.innerHTML = '';
-          cmsInitialized = false;
-        }
-        firebase.auth().signOut();
-      });
+    // Obsługa wylogowania
+    function handleLogout() {
+      if (state.cmsInitialized) {
+        cleanUpCMS();
+      }
+      firebase.auth().signOut();
+    }
 
-      // Monitorowanie stanu logowania
-      firebase.auth().onAuthStateChanged(user => {
-        if (user) {
-          authContainer.style.display = 'none';
-          cmsContainer.style.display = 'flex';
-          loadCMS();
-        } else {
-          authContainer.style.display = 'flex';
-          cmsContainer.style.display = 'none';
-          loading.style.display = 'none';
-        }
-      });
+    // Czyszczenie CMS
+    function cleanUpCMS() {
+      const cmsRoot = document.getElementById('cms-root');
+      if (cmsRoot) {
+        cmsRoot.innerHTML = '';
+      }
+      state.cmsInitialized = false;
+      state.cmsScriptLoaded = false;
     }
 
     // Ładowanie Decap CMS
-    function loadCMS() {
-      if (cmsInitialized) return;
-      
-      const loading = document.getElementById('loading');
-      loading.style.display = 'block';
+    function loadDecapCMS() {
+      if (state.cmsInitialized) return;
 
-      // Dynamiczne ładowanie skryptu CMS
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+      showLoading("cms-loading");
       
-      script.onload = () => {
-        // Dodatkowe opóźnienie dla pewności
-        setTimeout(() => {
-          try {
-            CMS.init();
-            console.log("CMS initialized");
-            cmsInitialized = true;
-          } catch (error) {
-            console.error("CMS init error:", error);
-            document.getElementById('auth-error').textContent = 
-              "Błąd ładowania panelu admina. Odśwież stronę.";
-          }
-          loading.style.display = 'none';
-        }, 300);
-      };
-      
-      script.onerror = () => {
-        loading.style.display = 'none';
-        document.getElementById('auth-error').textContent = 
-          "Nie udało się załadować panelu admina.";
-      };
-      
-      document.head.appendChild(script);
+      // Sprawdź czy skrypt CMS jest już załadowany
+      if (!state.cmsScriptLoaded) {
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js';
+        script.id = 'cms-script';
+        
+        script.onload = () => {
+          state.cmsScriptLoaded = true;
+          initializeDecapCMS();
+        };
+        
+        script.onerror = () => {
+          hideLoading("cms-loading");
+          showError("cms-root", "Failed to load CMS script");
+        };
+        
+        document.head.appendChild(script);
+      } else {
+        initializeDecapCMS();
+      }
     }
 
-    // Start aplikacji
-    document.addEventListener('DOMContentLoaded', initializeFirebase);
+    // Inicjalizacja Decap CMS
+    function initializeDecapCMS() {
+      try {
+        // Dodatkowe opóźnienie dla stabilności
+        setTimeout(() => {
+          CMS.init();
+          console.log("Decap CMS initialized successfully");
+          state.cmsInitialized = true;
+          hideLoading("cms-loading");
+        }, 500);
+      } catch (error) {
+        console.error("CMS init error:", error);
+        hideLoading("cms-loading");
+        showError("cms-root", `CMS init failed: ${error.message}`);
+      }
+    }
+
+    // Nasłuchiwacz stanu uwierzytelnienia
+    function setupAuthListeners() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          state.currentUser = user;
+          showCMS();
+          loadDecapCMS();
+        } else {
+          state.currentUser = null;
+          showAuth();
+        }
+      });
+    }
+
+    // Pokazanie panelu logowania
+    function showAuth() {
+      document.getElementById('auth-panel').style.display = 'flex';
+      document.getElementById('cms-panel').style.display = 'none';
+      hideLoading("auth-loading");
+    }
+
+    // Pokazanie panelu CMS
+    function showCMS() {
+      document.getElementById('auth-panel').style.display = 'none';
+      document.getElementById('cms-panel').style.display = 'flex';
+      document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    }
+
+    // Pomocnicze funkcje UI
+    function showLoading(elementId) {
+      document.getElementById(elementId).style.display = 'block';
+    }
+
+    function hideLoading(elementId) {
+      document.getElementById(elementId).style.display = 'none';
+    }
+
+    function showError(elementId, message) {
+      const element = document.getElementById(elementId);
+      element.textContent = message;
+      element.style.display = 'block';
+    }
+
+    function hideError(elementId) {
+      document.getElementById(elementId).style.display = 'none';
+    }
+
+    // Start aplikacji po załadowaniu DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeFirebase();
+    });
   </script>
 </body>
 </html>
