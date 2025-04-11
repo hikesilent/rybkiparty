@@ -164,11 +164,32 @@
                             cmsFrame.setAttribute('allow-scripts', 'true');
                             document.body.appendChild(cmsFrame);
 
-                            // Dodatkowe sprawdzenie, czy CMS jest zdefiniowane w iframe
+                            // Inicjalizacja CMS bez autoryzacji
                             const checkIframeCMS = setInterval(() => {
                                 if (cmsFrame.contentWindow.CMS) {
                                     clearInterval(checkIframeCMS);
-                                    cmsFrame.contentWindow.CMS.init();
+                                    cmsFrame.contentWindow.CMS.init({
+                                        config: {
+                                            backend: {
+                                                name: 'test-repo', // Ustawienie na 'test-repo'
+                                                branch: 'main' // lub nazwa Twojej gałęzi
+                                            },
+                                            media_folder: 'static/img',
+                                            public_folder: '/img',
+                                            collections: [
+                                                {
+                                                    name: 'posts',
+                                                    label: 'Posts',
+                                                    folder: 'content/posts',
+                                                    create: true,
+                                                    fields: [
+                                                        { label: 'Title', name: 'title', widget: 'string' },
+                                                        { label: 'Body', name: 'body', widget: 'markdown' }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    });
                                     state.cmsInstance = cmsFrame;
                                     state.cmsInitialized = true;
                                     hideLoading('cms-loading');
