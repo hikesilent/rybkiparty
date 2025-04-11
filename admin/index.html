@@ -141,16 +141,20 @@
       }
     }
 
-    function handleLogout() {
-      if (state.cmsInitialized) {
-        cleanUpCMS();
-      }
-      state.currentUser = null;
-      firebase.auth().signOut().then(() => {
-        const logoutBtn = document.getElementById('logout-btn');
-        logoutBtn.removeEventListener('click', handleLogout);
-      });
-    }
+function handleLogout() {
+  firebase.auth().signOut().then(() => {
+    const logoutBtn = document.getElementById('logout-btn');
+    logoutBtn.removeEventListener('click', handleLogout);
+
+    // Tylko chowamy CMS, nie usuwamy
+    document.getElementById('cms-panel').style.display = 'none';
+    document.getElementById('cms-root').innerHTML = '';
+    
+    // Zostawiamy <script> CMS-u, bo może być w użyciu
+    state.cmsInitialized = false;
+  });
+}
+
 
     function cleanUpCMS() {
       const cmsRoot = document.getElementById('cms-root');
