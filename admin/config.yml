@@ -4,7 +4,7 @@ backend:
   branch: main
   site_domain: rybki.party
   base_url: https://api.netlify.com
-  auth_endpoint: https://api.netlify.com/auth
+  auth_endpoint: auth
   auth_scope: public_repo
 
 media_folder: "assets/uploads"
