@@ -4,20 +4,22 @@ backend:
 
 local_backend: false
 
-media_folder: "assets/uploads"
-public_folder: "/assets/uploads"
-
+media_folder: "static/admin/uploads"
+public_folder: "/admin/uploads"
 
 collections:
-  - name: "posts"
-    label: "Posty"
+  - name: "blog"
+    label: "Blog"
     folder: "_posts"
     create: true
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
-    fields:  # UWAGA: fields MUSI być tablicą
-      - { name: "title", label: "Tytuł", widget: "string" }
-      - { name: "date", label: "Data", widget: "datetime" }
-      - { name: "body", label: "Treść", widget: "markdown" }
-      - { name: "image", label: "Zdjęcie", widget: "image", required: false }
-      - { name: "tags", label: "Tagi", widget: "list", required: false }
-      
+    fields:
+      - label: "Tytuł"
+        name: "title"
+        widget: "string"
+      - label: "Data"
+        name: "date"
+        widget: "datetime"
+      - label: "Treść"
+        name: "body"
+        widget: "markdown"
