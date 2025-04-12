@@ -1,3 +1,10 @@
 source "https://rubygems.org"
+
+# używaj tylko Jekylla, bo github-pages sam w sobie ma dużo zależności i nie jest wspierany na Netlify
 gem "jekyll", "~> 4.3.2"
-gem "github-pages", group: :jekyll_plugins
+
+# Jeśli potrzebujesz wtyczek, dodaj je oddzielnie, zamiast używać 'github-pages'
+group :jekyll_plugins do
+  gem "jekyll-feed"
+  gem "jekyll-seo-tag"
+end
