@@ -1,8 +1,8 @@
 backend:
   name: git-gateway
   branch: main # Branch to update (optional; defaults to master)
-  identity_url: "https://rybki.party/.netlify/identity"
-  gateway_url: "https://rybki.party/.netlify/git"
+  identity_url: "https://rybkiparty.netlify.app/.netlify/identity"
+  gateway_url: "https://rybkiparty.netlify.app/.netlify/git"
   login: true
   roles: ["admin", "editor"] # Allow both admin and editor roles
 
@@ -77,4 +77,3 @@ collections:
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "Hidden", name: "hidden", widget: "boolean", default: false }
       - { label: "Body", name: "body", widget: "markdown" }
-      
