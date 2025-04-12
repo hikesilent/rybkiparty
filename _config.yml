@@ -5,6 +5,10 @@ url: "https://rybki.party"
 theme: minima
 
 collections:
+  authors:
+    output: true
+  category:
+    output: true
   posts:
     output: true
     permalink: /blog/:title/
@@ -21,4 +25,8 @@ sass:
 
 plugins:
   - jekyll-feed
+  - jekyll-seo-tag
   - jekyll-sass-converter
+  - jekyll-gist
+  - jekyll-avatar
+  - jekyll-sitemap
