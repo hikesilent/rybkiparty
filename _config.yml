@@ -9,15 +9,46 @@ collections:
     output: true
   category:
     output: true
-  posts:
-    output: true
-    permalink: /blog/:title/
 
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - package.json
+  - CHANGELOG
+  - LICENSE
+  - README
+  - /docs
+  
+# Defaults
 defaults:
+  # _posts
   - scope:
       path: ""
+      type: posts
     values:
-      layout: default
+      layout: post
+      share: true
+      related: true
+  # _pages
+  - scope:
+      path: ""
+      type: pages
+    values:
+      layout: page
+      sidebar: left
+  # _authors
+  - scope:
+      path: ""
+      type: authors
+    values:
+      layout: author
+  # _category
+  - scope:
+      path: ""
+      type: category
+    values:
+      layout: category
 
 sass:
   sass_dir: _sass
