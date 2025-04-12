@@ -66,13 +66,12 @@ collections:
     label: "Blog Posts"
     folder: "_posts"
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: "{{title | slugify}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
       - { label: "Image", name: "image", widget: "image", required: false }
       - { label: "Author", name: "author", widget: "relation", collection: "authors", value_field: "username", search_fields: ["title", "username"], display_fields: ["title"] }
       - { label: "Date", name: "date", widget: "datetime" }
-      - { label: "Description", name: "description", widget: "text", required: false }
       - { label: "Categories", name: "categories", widget: "list" }
       - { label: "Tags", name: "tags", widget: "list", required: false }
       - { label: "Hidden", name: "hidden", widget: "boolean", default: false }
