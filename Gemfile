@@ -9,6 +9,6 @@ group :jekyll_plugins do
    gem "jekyll-paginate"  # Removed version constraint to get the latest version
    gem "jekyll-seo-tag"  # Already allows latest version
    gem "jekyll-gist"  # Already allows latest version
-   gem '"jekyll-avatar"  # Already allows latest version
+   gem "jekyll-avatar"  # Already allows latest version
    gem "jekyll-sitemap"  # Already allows latest version
 end
