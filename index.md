@@ -9,7 +9,10 @@ title: Rybki Party - Kanał dla prawdziwych wędkarzy
     <p>Dołącz do naszej społeczności i razem odkrywajmy tajniki wędkarstwa!</p>
 </div>
 
-<h3 class="social-title">Poradniki</h3>
-{% include posts-section.html %}
+{% include posts-section.html 
+   title="Poradniki wędkarskie" 
+   category="Poradniki"
+   limit=6
+%}
 
 {% include social.html %}

@@ -1,6 +1,15 @@
 <div class="posts-section">
+    {% if include.title %}
+    <h2 class="social-title">{{ include.title }}</h2>
+    {% endif %}
+
     <div class="posts-grid">
-        {% for post in site.categories.Poradniki limit:6 %}
+        {% assign posts_to_show = site.posts %}
+        {% if include.category %}
+            {% assign posts_to_show = site.categories[include.category] %}
+        {% endif %}
+        
+        {% for post in posts_to_show limit: include.limit | default: 6 %}
         <a href="{{ post.url }}" class="post-card">
             <div class="post-image-link">
                 <img src="{{ post.image | default: '/assets/images/default.jpg' }}" 
@@ -90,10 +99,6 @@
     .posts-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
-    }
-    
-    .posts-section {
-        padding: 1rem;
     }
 }
 
