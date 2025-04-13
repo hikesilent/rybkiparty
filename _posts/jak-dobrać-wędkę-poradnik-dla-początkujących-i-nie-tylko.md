@@ -9,7 +9,7 @@ category:
   - Ciekawostki
 hidden: false
 ---
-Wybór wędki to trochę jak dobór narzędzia do pracy – musisz wiedzieć, co chcesz złowić, gdzie i w jaki sposób. Oto prosta ściąga, która pomoże Ci podjąć dobrą decyzję.
+Wybór wędki to trochę jak dobór narzędzia do pracy – musisz wiedzieć, co chcesz złowić, gdzie i w jaki sposób. Oto prosta ściąga, która pomoże Ci podjąć dobrą decyzję. 
 
 1. Zadaj sobie trzy pytania:
 
@@ -22,8 +22,7 @@ Staw, jezioro, rzeka, a może morze?
 c) Jaką metodą chcesz łowić?
 Spławikowa, spinningowa, gruntowa? Każda wymaga innej wędki.
 
-
----
+- - -
 
 2. Rodzaje wędek i kiedy je wybrać:
 
@@ -37,7 +36,6 @@ Dla kogo: idealna dla początkujących
 
 Na co: leszcze, płocie, karasie
 
-
 Wędka spinningowa
 
 Dla aktywnych – rzucasz, ściągasz, szukasz drapieżnika.
@@ -47,7 +45,6 @@ Długość: od dwóch do trzech metrów
 Dla kogo: dla tych, którzy lubią ruch
 
 Na co: szczupak, okoń, sandacz
-
 
 Wędka gruntowa (tzw. feeder)
 
@@ -59,7 +56,6 @@ Dla kogo: dla łowiących z gruntu
 
 Na co: karpie, leszcze, sumy
 
-
 Wędka morskie lub sumowe
 
 Mocne i długie – do walki z dużymi rybami.
@@ -68,9 +64,7 @@ Na co: dorsze, halibuty, sumy
 
 Uwaga: wymaga solidnego kołowrotka
 
-
-
----
+- - -
 
 3. Na co jeszcze zwrócić uwagę:
 
@@ -80,11 +74,8 @@ Akcja wędki – czyli jak się ugina. Szybka akcja = szybka reakcja (dobrze wyc
 
 Materiał – włókno szklane (tańsze i cięższe) vs. węglowe (lekkie i czułe, ale droższe).
 
-
-
----
+- - -
 
 4. Na początek nie przesadzaj
 
 Nie potrzebujesz od razu pięciu wędek i drogiego sprzętu. Zacznij od jednej, uniwersalnej – np. spinningowej lub spławikowej. Reszta przyjdzie z czasem i doświadczeniem.
-
