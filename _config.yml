@@ -4,7 +4,6 @@ baseurl: ""
 url: "https://rybki.party"
 theme: minima
 timezone: Europe/Warsaw
-future: true
 
 sitemap:
   exclude:
