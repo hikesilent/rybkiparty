@@ -5,7 +5,7 @@
         {% for post in site.posts limit:6 %}
         <article class="post-card">
             <a href="{{ post.url }}" class="post-image-link">
-                <img src="{{ post.image | default: '/assets/images/default-fishing.jpg' }}" 
+                <img src="{{ post.image | default: '/assets/images/default.jpg' }}" 
                      alt="{{ post.title }}" 
                      class="post-image"
                      loading="lazy">
@@ -15,10 +15,6 @@
             </h3>
         </article>
         {% endfor %}
-    </div>
-    
-    <div class="posts-cta">
-        <a href="/blog" class="btn">Zobacz wszystkie posty</a>
     </div>
 </div>
 

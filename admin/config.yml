@@ -14,28 +14,9 @@ collections:
   - name: "pages"
     label: "Pages"
     files:
-      - name: "about"
-        label: "About Page"
-        file: "about.md"
-        fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Permalink", name: "permalink", widget: "string" }
-          - { label: "Sidebar", name: "sidebar", widget: "select", options: ["none", "left", "right"], default: "none" }
-          - { label: "Content", name: "body", widget: "markdown" }
-      
-      # Additional pages can be added here following the same pattern
       - name: "terms"
         label: "Terms & Code of Conduct"
         file: "terms.md"
-        fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Permalink", name: "permalink", widget: "string" }
-          - { label: "Sidebar", name: "sidebar", widget: "select", options: ["none", "left", "right"], default: "none" }
-          - { label: "Content", name: "body", widget: "markdown" }
-
-      - name: "events"
-        label: "Events Page"
-        file: "events/index.md"
         fields:
           - { label: "Title", name: "title", widget: "string" }
           - { label: "Permalink", name: "permalink", widget: "string" }
@@ -51,8 +32,8 @@ collections:
       - { label: "Tytuł", name: "title", widget: "string" }
       - { label: "Zdjęcie", name: "image", widget: "image", required: false }
       - { label: "Autor", name: "author", widget: "relation", collection: "authors", value_field: "username", search_fields: ["title", "username"], display_fields: ["title"] }
+      - { label: "Kategoria", name: "category", widget: "relation", collection: "categories", value_field: "name", search_fields: ["name"], display_fields: ["name"], multiple: true }
       - { label: "Data", name: "date", widget: "datetime" }
-      - { label: "Kategoria", name: "category", widget: "relation", collection: "categories", value_field: "name", search_fields: ["name"], display_fields: ["title"], multiple: true }
       - { label: "Ukryty", name: "hidden", widget: "boolean", default: false }
       - { label: "Zawartość", name: "body", widget: "markdown" }
 
@@ -68,7 +49,7 @@ collections:
       - { label: "Ikona", name: "icon", widget: "string", required: false }
 
   - name: "authors"
-    label: "Authors"
+    label: "Autorzy"
     folder: "_authors"
     create: true
     slug: "{{slug}}"
@@ -76,7 +57,7 @@ collections:
       - { label: "Display Name", name: "title", widget: "string" }
       - { label: "Username", name: "username", widget: "string" }
       - { label: "Default Author", name: "default", widget: "boolean", default: false }
-      - { label: "Avatar", name: "image", widget: "string" }
+      - { label: "Avatar", name: "image", widget: "image", required: false }
       - { label: "Bio", name: "bio", widget: "text", required: false }
       - { label: "Email", name: "email", widget: "string", required: false }
 
