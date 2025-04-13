@@ -12,17 +12,23 @@ public_folder: "/assets/images/uploads" # URL path for uploaded images
 
 collections:
   - name: "pages"
-    label: "Pages"
+    label: "Strony"
     files:
-      - name: "terms"
-        label: "Terms & Code of Conduct"
-        file: "terms.md"
+      - name: "privacy"
+        label: "Polityka Prywatności"
+        file: "polityka-prywatnosci.md"
         fields:
-          - { label: "Title", name: "title", widget: "string" }
-          - { label: "Permalink", name: "permalink", widget: "string" }
-          - { label: "Sidebar", name: "sidebar", widget: "select", options: ["none", "left", "right"], default: "none" }
-          - { label: "Content", name: "body", widget: "markdown" }
-
+          - { label: "Tytuł", name: "title", widget: "string" }
+          - { label: "Slug", name: "permalink", widget: "string" }
+          - { label: "Zawartość", name: "body", widget: "markdown" }
+      - name: "contact"
+        label: "Kontakt"
+        file: "kontakt.md"
+        fields:
+          - { label: "Tytuł", name: "title", widget: "string" }
+          - { label: "Slug", name: "permalink", widget: "string" }
+          - { label: "Zawartość", name: "body", widget: "markdown" }
+          
   - name: "posts"
     label: "Posty"
     folder: "_posts"
@@ -59,8 +65,5 @@ collections:
       - { label: "Default Author", name: "default", widget: "boolean", default: false }
       - { label: "Avatar", name: "image", widget: "image", required: false }
       - { label: "Bio", name: "bio", widget: "text", required: false }
-      - { label: "Email", name: "email", widget: "string", required: false }
-
-
 
 
