@@ -33,7 +33,7 @@ collections:
     label: "Posty"
     folder: "_posts"
     create: true
-    slug: "{{slug}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
       - { label: "Tytuł", name: "title", widget: "string" }
       - { label: "Zdjęcie", name: "image", widget: "image", required: false }
