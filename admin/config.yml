@@ -9,28 +9,8 @@ backend:
 media_folder: "assets/images/uploads" # Folder for uploaded images
 public_folder: "/assets/images/uploads" # URL path for uploaded images
 
-collections:
-  - name: "authors"
-    label: "Authors"
-    folder: "_authors"
-    create: true
-    slug: "{{slug}}"
-    fields:
-      - { label: "Display Name", name: "title", widget: "string" }
-      - { label: "Username", name: "username", widget: "string" }
-      - { label: "Default Author", name: "default", widget: "boolean", default: false }
-      - { label: "Avatar", name: "image", widget: "string" }
-      - { label: "Bio", name: "bio", widget: "text", required: false }
-      - { label: "Email", name: "email", widget: "string", required: false }
-      - { label: "Website", name: "website", widget: "string", required: false }
-      - { label: "Facebook", name: "facebook", widget: "string", required: false }
-      - { label: "GitHub", name: "github", widget: "string", required: false }
-      - { label: "Reddit", name: "reddit", widget: "string", required: false }
-      - { label: "Instagram", name: "instagram", widget: "string", required: false }
-      - { label: "LinkedIn", name: "linkedin", widget: "string", required: false }
-      - { label: "Twitter", name: "twitter", widget: "string", required: false }
-      - { label: "Biography", name: "body", widget: "markdown" }
 
+collections:
   - name: "pages"
     label: "Pages"
     files:
@@ -63,16 +43,43 @@ collections:
           - { label: "Content", name: "body", widget: "markdown" }
 
   - name: "posts"
-    label: "Blog Posts"
+    label: "Posty"
     folder: "_posts"
     create: true
-    slug: "{{title | slugify}}"
+    slug: "{{slug}}"
     fields:
-      - { label: "Title", name: "title", widget: "string" }
-      - { label: "Image", name: "image", widget: "image", required: false }
-      - { label: "Author", name: "author", widget: "relation", collection: "authors", value_field: "username", search_fields: ["title", "username"], display_fields: ["title"] }
-      - { label: "Date", name: "date", widget: "datetime" }
-      - { label: "Categories", name: "categories", widget: "list" }
-      - { label: "Tags", name: "tags", widget: "list", required: false }
-      - { label: "Hidden", name: "hidden", widget: "boolean", default: false }
-      - { label: "Body", name: "body", widget: "markdown" }
+      - { label: "Tytuł", name: "title", widget: "string" }
+      - { label: "Zdjęcie", name: "image", widget: "image", required: false }
+      - { label: "Autor", name: "author", widget: "relation", collection: "authors", value_field: "username", search_fields: ["title", "username"], display_fields: ["title"] }
+      - { label: "Data", name: "date", widget: "datetime" }
+      - { label: "Kategoria", name: "category", widget: "relation", collection: "categories", value_field: "name", search_fields: ["name"], display_fields: ["title"], multiple: true }
+      - { label: "Ukryty", name: "hidden", widget: "boolean", default: false }
+      - { label: "Zawartość", name: "body", widget: "markdown" }
+
+  - name: "categories"
+    label: "Kategorie"
+    folder: "_categories"
+    create: true
+    identifier_field: "name"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Nazwa", name: "name", widget: "string" }
+      - { label: "Opis", name: "description", widget: "text", required: false }
+      - { label: "Ikona", name: "icon", widget: "string", required: false }
+
+  - name: "authors"
+    label: "Authors"
+    folder: "_authors"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - { label: "Display Name", name: "title", widget: "string" }
+      - { label: "Username", name: "username", widget: "string" }
+      - { label: "Default Author", name: "default", widget: "boolean", default: false }
+      - { label: "Avatar", name: "image", widget: "string" }
+      - { label: "Bio", name: "bio", widget: "text", required: false }
+      - { label: "Email", name: "email", widget: "string", required: false }
+
+
+
+
