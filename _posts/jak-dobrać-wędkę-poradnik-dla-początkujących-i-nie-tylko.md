@@ -5,6 +5,8 @@ author: RybkiParty
 date: 2025-04-12T22:44:00.000Z
 categories:
   - Poradniki
+category:
+  - Ciekawostki
 hidden: false
 ---
 Wybór wędki to trochę jak dobór narzędzia do pracy – musisz wiedzieć, co chcesz złowić, gdzie i w jaki sposób. Oto prosta ściąga, która pomoże Ci podjąć dobrą decyzję.
