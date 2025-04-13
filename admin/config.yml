@@ -41,7 +41,7 @@ collections:
       - { label: "Kategoria", name: "category", widget: "relation", collection: "categories", value_field: "name", search_fields: ["name"], display_fields: ["name"], multiple: true }
       - { label: "Data", name: "date", widget: "datetime" }
       - { label: "Ukryty", name: "hidden", widget: "boolean", default: false }
-      - { label: "Zawartość", name: "body", widget: "richtext" }
+      - { label: "Zawartość", name: "body", widget: "markdown" }
 
   - name: "categories"
     label: "Kategorie"
