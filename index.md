@@ -10,7 +10,7 @@ title: Rybki Party - Kanał dla prawdziwych wędkarzy
 </div>
 
 {% include posts-section.html 
-   title="Poradniki wędkarskie" 
+   title="Poradniki" 
    category="Poradniki"
    limit=6
 %}
