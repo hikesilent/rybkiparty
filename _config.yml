@@ -3,11 +3,13 @@ description: Kanał dla prawdziwych wędkarzy
 baseurl: ""
 url: "https://rybki.party"
 theme: minima
+timezone: Europe/Warsaw
+future: true
 
 sitemap:
   exclude:
-    - "/author/*"
-    - "/admin/*"
+    - "/author"
+    - "/admin/index.html"
     - "/google8d6f0e19f677a1e1.html"
     
 collections:

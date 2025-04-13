@@ -27,7 +27,7 @@ collections:
     label: "Posty"
     folder: "_posts"
     create: true
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    slug: "{{slug}}"
     fields:
       - { label: "Tytuł", name: "title", widget: "string" }
       - { label: "Zdjęcie", name: "image", widget: "image", required: false }
@@ -35,7 +35,7 @@ collections:
       - { label: "Kategoria", name: "category", widget: "relation", collection: "categories", value_field: "name", search_fields: ["name"], display_fields: ["name"], multiple: true }
       - { label: "Data", name: "date", widget: "datetime" }
       - { label: "Ukryty", name: "hidden", widget: "boolean", default: false }
-      - { label: "Zawartość", name: "body", widget: "markdown" }
+      - { label: "Zawartość", name: "body", widget: "richtext" }
 
   - name: "categories"
     label: "Kategorie"
