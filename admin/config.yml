@@ -68,7 +68,7 @@ collections:
   
   - name: "siteinfo"
     label: "Informacje o stronie"
-    file: "_data/siteinfo.yml"
+    files: "_data/siteinfo.yml"
     fields:
       - { label: "Tytuł strony", name: "title", widget: "string" }
       - { label: "Email kontaktowy", name: "email", widget: "string" }
