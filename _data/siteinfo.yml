@@ -1,28 +1,28 @@
-title: Rybki Party
-email: kontakt@rybki.party
+title: "Rybki Party"
+email: "kontakt@rybki.party"
 phone: ""
 
 socials:
-  - name: Facebook
-    url: https://facebook.com/RybkiParty
-    username: /RybkiParty
-    icon: fab fa-facebook-f
-    button: Obserwuj
+  - name: "Facebook"
+    url: "https://facebook.com/RybkiParty"
+    username: "/RybkiParty"
+    icon: "fab fa-facebook-f"
+    button: "Obserwuj"
 
-  - name: Instagram
-    url: https://instagram.com/RybkiParty
-    username: @RybkiParty
-    icon: fab fa-instagram
-    button: Obserwuj
+  - name: "Instagram"
+    url: "https://instagram.com/RybkiParty"
+    username: "@RybkiParty"
+    icon: "fab fa-instagram"
+    button: "Obserwuj"
 
-  - name: YouTube
-    url: https://youtube.com/@RybkiParty
-    username: @RybkiParty
-    icon: fab fa-youtube
-    button: Subskrybuj
+  - name: "YouTube"
+    url: "https://youtube.com/@RybkiParty"
+    username: "@RybkiParty"
+    icon: "fab fa-youtube"
+    button: "Subskrybuj"
 
-  - name: TikTok
-    url: https://tiktok.com/@RybkiParty
-    username: @RybkiParty
-    icon: fab fa-tiktok
-    button: Obserwuj
+  - name: "TikTok"
+    url: "https://tiktok.com/@RybkiParty"
+    username: "@RybkiParty"
+    icon: "fab fa-tiktok"
+    button: "Obserwuj"
