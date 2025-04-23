@@ -68,11 +68,13 @@ collections:
   
   - name: "siteinfo"
     label: "Informacje o stronie"
+    folder: "_data"
     file: "_data/siteinfo.yml"
     fields:
       - { label: "Tytuł strony", name: "title", widget: "string" }
       - { label: "Email kontaktowy", name: "email", widget: "string" }
       - { label: "Telefon", name: "phone", widget: "string" }
+      - { label: "Goolge analytics", name: "googleAnalytics", widget: "string" }
       - label: "Social Media"
         name: "socials"
         widget: "list"
