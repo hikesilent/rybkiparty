@@ -47,8 +47,6 @@
 .post-card {
     display: flex;
     flex-direction: column;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-    border-radius: 12px;
     background: white;
     transition: transform 0.2s ease;
     text-decoration: none;
@@ -64,7 +62,7 @@
     display: block;
     aspect-ratio: 16/9;
     overflow: hidden;
-    border-radius: 12px 12px 0px 0px;
+    border-radius: 12px;
 }
 
 .post-image {
@@ -108,7 +106,7 @@
 
 @media (max-width: 480px) {
     .posts-grid {
-        grid-template-columns: repeat(2, 1fr); /* 2 karty obok siebie na telefonie */
+        grid-template-columns: 1fr;
     }
     
     .post-title {
