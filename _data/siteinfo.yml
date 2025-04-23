@@ -1,7 +1,7 @@
 title: Rybki Party
 email: kontakt@rybki.party
 phone: ""
-googleAnalytics: G-X6HQ1VMHZX
+googleAnalytics: ""
 socials:
   - name: Facebook
     url: https://facebook.com/RybkiParty
@@ -23,8 +23,3 @@ socials:
     username: "@RybkiParty"
     icon: fab fa-tiktok
     button: Obserwuj
-  - name: sc
-    url: sc
-    username: cs
-    icon: cs
-    button: sc
