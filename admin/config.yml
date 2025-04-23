@@ -73,9 +73,9 @@ collections:
         name: "siteinfo"
         file: "_data/siteinfo.yml"
         fields:
-          - { label: "Tytuł strony", name: "title", widget: "string" }
-          - { label: "Email kontaktowy", name: "email", widget: "string" }
-          - { label: "Telefon", name: "phone", widget: "string" }
+          - { label: "Tytuł strony", name: "title", widget: "string", required: false }
+          - { label: "Email kontaktowy", name: "email", widget: "string", required: false }
+          - { label: "Telefon", name: "phone", widget: "string", required: false }
           - { label: "Google Analytics", name: "googleAnalytics", widget: "string", required: false }
           - label: "Social Media"
             name: "socials"

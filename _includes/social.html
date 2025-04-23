@@ -1,36 +1,21 @@
 <div class="social-section">
   <h2 class="social-title">Znajdź nas w mediach</h2>
   
-  <div class="social-grid">
 
-                <a href="https://facebook.com/RybkiParty" class="social-card" target="_blank">
-                    <i class="fab fa-facebook-f social-icon"></i>
-                    <h4 class="social-name">Facebook</h4>
-                    <p class="social-username">/RybkiParty</p>
-                    <span class="btn btn-outline">Obserwuj</span>
-                </a>
+
+<div class="social-grid">
+  {% for item in site.data.siteinfo.socials %}
+    <a href="{{ item.url }}" class="social-card" target="_blank">
+        <i class="{{ item.icon }} social-icon"></i>
+        <h4 class="social-name">{{ item.name }}</h4>
+        <p class="social-username">{{ item.username }}</p>
+        <span class="btn btn-outline">{{ item.button }}</span>
+    </a>
+  {% endfor %}
+</div>
+
                 
-                <a href="https://instagram.com/RybkiParty" class="social-card" target="_blank">
-                    <i class="fab fa-instagram social-icon"></i>
-                    <h4 class="social-name">Instagram</h4>
-                    <p class="social-username">@RybkiParty</p>
-                    <span class="btn btn-outline">Obserwuj</span>
-                </a>
-                
-                <a href="https://youtube.com/@RybkiParty" class="social-card" target="_blank">
-                    <i class="fab fa-youtube social-icon"></i>
-                    <h4 class="social-name">YouTube</h4>
-                    <p class="social-username">@RybkiParty</p>
-                    <span class="btn btn-outline">Subskrybuj</span>
-                </a>
-                
-                <a href="https://tiktok.com/@RybkiParty" class="social-card" target="_blank">
-                    <i class="fab fa-tiktok social-icon"></i>
-                    <h4 class="social-name">TikTok</h4>
-                    <p class="social-username">@RybkiParty</p>
-                    <span class="btn btn-outline">Obserwuj</span>
-                </a>
-  </div>
+
 </div>
 
 
