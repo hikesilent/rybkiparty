@@ -66,4 +66,20 @@ collections:
       - { label: "Avatar", name: "image", widget: "image", required: false }
       - { label: "Bio", name: "bio", widget: "text", required: false }
 
+- name: "siteinfo"
+  label: "Informacje o stronie"
+  file: "_data/siteinfo.yml"
+  fields:
+    - { label: "Tytuł strony", name: "title", widget: "string" }
+    - { label: "Email kontaktowy", name: "email", widget: "string" }
+    - { label: "Telefon", name: "phone", widget: "string" }
+    - label: "Social Media"
+      name: "socials"
+      widget: "list"
+      fields:
+        - { label: "Nazwa", name: "name", widget: "string" }
+        - { label: "URL", name: "url", widget: "string" }
+        - { label: "Nazwa użytkownika", name: "username", widget: "string" }
+        - { label: "Ikona (klasa FontAwesome)", name: "icon", widget: "string" }
+        - { label: "Przycisk", name: "button", widget: "string" }
 
