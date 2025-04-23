@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    {% include head.html %}
+    <meta name="description" content="{{ page.excerpt | strip_html | truncate: 160 }}">
+</head>
+<body>
+    {% include header.html %}
+    
+    <main class="container post-container">
+        <article class="blog-post">
+            <header class="post-header">
+                <h1 class="post-title">{{ page.title }}</h1>
+                <p class="post-meta">
+                    <time datetime="{{ page.date | date_to_xmlschema }}">
+                        {{ page.date | date: "%d %B %Y" }}
+                    </time>
+                    {% if page.author %}
+                        • Autor: {{ page.author }}
+                    {% endif %}
+                </p>
+                {% if page.image %}
+                    <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" class="post-hero-image">
+                {% endif %}
+            </header>
+
+            <div class="post-content">
+                {{ content }}
+            </div>
+
+            {% if page.tags %}
+                <footer class="post-tags">
+                    <strong>Tagi:</strong>
+                    {% for tag in page.tags %}
+                        <a href="{{ '/tag/' | append: tag | relative_url }}">#{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
+                    {% endfor %}
+                </footer>
+            {% endif %}
+        </article>
+    </main>
+    
+    {% include footer.html %}
+    <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+</body>
+</html>
