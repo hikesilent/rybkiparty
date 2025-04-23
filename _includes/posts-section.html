@@ -113,10 +113,13 @@
     
     .post-title {
         font-size: 0.9rem;
+        line-height: 1.4;
+        height: 2.52em; /* 0.9rem * 1.4 * 2 = 2.52em */
         padding: 0.8rem;
-        font-size: 0.9rem;
-        line-height: 1.4; /* Wysokość linii */
-        height: 2.8em; /* 2 linie (1.4 x 2) */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 }
 
