@@ -83,3 +83,4 @@ collections:
           - { label: "Ikona (klasa FontAwesome)", name: "icon", widget: "string" }
           - { label: "Przycisk", name: "button", widget: "string" }
 
+
