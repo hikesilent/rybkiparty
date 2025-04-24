@@ -41,5 +41,69 @@
     
     {% include footer.html %}
     <script src="{{ '/assets/js/main.js' | relative_url }}"></script>
+
+    <style>
+        .post-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .post-title {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .post-meta {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 1.5rem;
+        }
+
+        .post-hero-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            object-fit: cover;
+        }
+
+        .post-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .post-content h2, 
+        .post-content h3 {
+            margin-top: 2rem;
+        }
+
+        .post-tags {
+            margin-top: 3rem;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .post-tags a {
+            color: #0b75c9;
+            text-decoration: none;
+        }
+
+        .post-tags a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .post-title {
+                font-size: 1.6rem;
+            }
+
+            .post-content {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </body>
 </html>
