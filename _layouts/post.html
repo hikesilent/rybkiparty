@@ -78,7 +78,6 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem 1rem;
-  font-family: 'Unica One', 'Segoe UI', sans-serif;
   font-size: 1.2rem;
   line-height: 1.8;
   color: #222;
@@ -142,15 +141,12 @@
   {{ content }}
 </article>
 
+{% include posts-section.html 
+   title="zobacz też" 
+   category=page.category
+   limit=6
+%}
 
-            {% if page.tags %}
-                <footer class="post-tags">
-                    <strong>Tagi:</strong>
-                    {% for tag in page.tags %}
-                        <a href="{{ '/tag/' | append: tag | relative_url }}">#{{ tag }}</a>{% unless forloop.last %}, {% endunless %}
-                    {% endfor %}
-                </footer>
-            {% endif %}
         </article>
     </main>
     
