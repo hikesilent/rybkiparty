@@ -86,5 +86,21 @@ collections:
               - { label: "Nazwa użytkownika", name: "username", widget: "string" }
               - { label: "Ikona (klasa FontAwesome)", name: "icon", widget: "string" }
               - { label: "Przycisk", name: "button", widget: "string" }
+          - label: "Czcionka strony"
+            name: "font"
+            widget: "select"
+            options:
+              - { label: "Segoe UI", value: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" }
+              - { label: "Roboto", value: "'Roboto', sans-serif" }
+              - { label: "Open Sans", value: "'Open Sans', sans-serif" }
+              - { label: "Arial", value: "Arial, sans-serif" }
+              - { label: "Georgia", value: "Georgia, serif" }
+              - { label: "Bungee", value: "'Bungee', cursive" }
+              - { label: "Luckiest Guy", value: "'Luckiest Guy', cursive" }
+              - { label: "Sigmar One", value: "'Sigmar One', cursive" }
+              - { label: "Unica One", value: "'Unica One', cursive" }
+              - { label: "DynaPuff", value: "'DynaPuff', cursive" }
+            default: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif"
+
 
     
